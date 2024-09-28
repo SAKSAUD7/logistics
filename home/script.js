@@ -227,7 +227,7 @@ function sendSMS(message) {
     const phoneNumber = '9481155714';
     
     // Here you'll need to integrate an SMS API like Twilio
-    // Example (using Twilio's REST API):
+    //  (use Twilio's REST API):
     /*
     fetch('https://api.twilio.com/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXX/Messages.json', {
         method: 'POST',
