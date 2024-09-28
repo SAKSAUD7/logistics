@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,20 +9,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-     <!-- Login Page -->
-    <section id="login-page" class="login-page">
-        <h2>Login to Access the Software</h2>
-        <form id="login-form" onsubmit="event.preventDefault(); login();">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <button type="submit">Login</button>
-            <p id="login-error" class="error-message">Invalid username or password</p>
-        </form>
-    </section>
     <!-- Header with Main Tabs and Logo -->
     <header>
         <div class="header-container">
@@ -44,11 +32,7 @@
         </div>
     </header>
 
-
-
-    <!-- Main Content Area -->
-
-     <!-- Sidebar Tabs -->
+    <!-- Sidebar Tabs -->
     <aside class="sidebar">
         <ul>
             <li><a href="#" onclick="showSection('calculator')">Calculator</a></li>
@@ -65,6 +49,8 @@
             </ul>
         </div>
     </aside>
+
+    <!-- Main Content Area -->
     <main>
         <!-- Home Section -->
         <section id="home" class="content-section">
@@ -154,24 +140,10 @@
         <section id="bill" class="content-section billing-section">Bill Form and Details</section>
         <section id="receipts" class="content-section billing-section">Receipts Form and Details</section>
         <section id="expense" class="content-section billing-section">Expense Form and Details</section>
-        <section id="notepad" class="content-section">Notepad Content</section>
+        <section id="notepad" class="content-section">Notepad Content</section>   
         <section id="billing" class="content-section">Billing Content</section>
     </main>
-    <script>
-        const loginForm = document.getElementById('login-form');
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === "admin" && password === "admin123") {
-                // Redirect to the main page upon successful login
-                window.location.href = "index.html";
-            } else {
-                document.getElementById('error-message').style.display = 'block';
-            }
-        });
-    </script>
+   
 
     <script src="script.js"></script>
 </body>

@@ -1,3 +1,25 @@
+
+
+
+// Function to handle login
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Replace these with your actual credentials or validation logic
+    const validUsername = 'admin';
+    const validPassword = 'password';
+
+    if (username === validUsername && password === validPassword) {
+        // On successful login, redirect to the home page
+        window.location.href = 'home.html'; // Change to the actual home page URL
+    } else {
+        // Show error message if login fails
+        const errorMessage = document.getElementById('login-error');
+        errorMessage.style.display = 'block'; // Show the error message
+    }
+}
+
 // Function to display main section
 function showSection(sectionId) {
     const sections = document.querySelectorAll('.content-section');
