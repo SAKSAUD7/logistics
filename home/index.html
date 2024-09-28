@@ -35,7 +35,7 @@
         <!-- Billing Software Sub-Tabs -->
         <div class="billing-tabs">
             <ul>
-                <li><a href="home\bill\index1.html" onclick="showBillingSection('bill')">Bill</a></li>
+                <li><a href="home/bill/index1.html" onclick="showBillingSection('bill')">Bill</a></li>
                 <li><a href="#" onclick="showBillingSection('receipts')">Res</a></li>
                 <li><a href="#" onclick="showBillingSection('expense')">Expense</a></li>
             </ul>
@@ -44,7 +44,24 @@
 
     <!-- Main Content Area -->
     <main>
-        <section id="vehicle-records" class="content-section">Vehicle Records Content</section>
+        <section id="vehicle-records" class="content-section">
+            <h2>Vehicle Records</h2>
+            <table id="vehicle-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Vehicle Name</th>
+                        <th>Insurance Expiry Date</th>
+                        <th>Alert</th>
+                    </tr>
+                </thead>
+                <tbody id="vehicle-body">
+                    <!-- Rows will be added here dynamically -->
+                </tbody>
+            </table>
+            <button onclick="addVehicleRow()">Add Vehicle</button>
+        </section>
+
         <section id="transactions" class="content-section">Transactions Content</section>
         <section id="services" class="content-section">Services Content</section>
         <section id="reports" class="content-section">Reports Content</section>
