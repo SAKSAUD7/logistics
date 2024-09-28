@@ -12,7 +12,7 @@ body {
 
 /* Header Styling */
 header {
-    background-color: #333;
+    background-color: #000000;
     color: white;
     padding: 10px 0;
 }
@@ -30,7 +30,7 @@ header {
 }
 
 .main-nav ul li a:hover {
-    background-color: #444;
+    background-color: #000000;
 }
 
 /* Sidebar Styling */
@@ -40,7 +40,7 @@ header {
     padding: 15px;
     width: 250px;
     position: absolute;
-    top: 60px;
+    top: 125px;
     bottom: 0;
 }
 
