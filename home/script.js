@@ -23,22 +23,180 @@ window.onload = function() {
 };
 
 // Vehicle Records Functions
+document.addEventListener("DOMContentLoaded", loadVehicleRecords);
+
 function addVehicleRow() {
     const tableBody = document.getElementById('vehicle-body');
-
-    // Create a new row
     const newRow = document.createElement('tr');
 
-    // Create cells for the new row
     newRow.innerHTML = `
-        <td><input type="file" onchange="previewImage(event)"></td>
-        <td><input type="text" placeholder="Vehicle Name"></td>
-        <td><input type="date" onchange="checkInsuranceExpiry(this)"></td>
-        <td><button onclick="alert('Alert for insurance expiry!')">Set Alert</button></td>
+        <td><input type="file" onchange="previewImage(event)" class="vehicle-image"></td>
+        <td><input type="text" placeholder="Vehicle Name" class="vehicle-name"></td>
+        <td><input type="text" placeholder="Owner Name" class="owner-name"></td>
+        <td><input type="text" placeholder="Driver Name" class="driver-name"></td>
+        <td><input type="text" placeholder="Driver License" class="driver-license"></td>
+        <td><input type="date" class="vehicle-fc"></td>
+        <td><input type="date" class="insurance-expiry"></td>
+        <td>
+            <button onclick="saveRecord(this)">Save</button>
+            <button onclick="deleteRecord(this)">Delete</button>
+        </td>
     `;
 
-    // Append the new row to the table body
     tableBody.appendChild(newRow);
+}
+
+function saveRecord(button) {
+    const row = button.closest('tr');
+    const imageInput = row.querySelector('.vehicle-image').files[0];
+    const vehicleName = row.querySelector('.vehicle-name').value;
+    const ownerName = row.querySelector('.owner-name').value;
+    const driverName = row.querySelector('.driver-name').value;
+    const driverLicense = row.querySelector('.driver-license').value;
+    const vehicleFC = row.querySelector('.vehicle-fc').value;
+    const insuranceExpiry = row.querySelector('.insurance-expiry').value;
+
+    if (vehicleName && ownerName && driverName && driverLicense && vehicleFC && insuranceExpiry) {
+        let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imageBase64 = imageInput ? event.target.result : '';
+
+            const newRecord = {
+                image: imageBase64,
+                name: vehicleName,
+                owner: ownerName,
+                driver: driverName,
+                license: driverLicense,
+                fc: vehicleFC,
+                expiry: insuranceExpiry
+            };
+
+            vehicleRecords.push(newRecord);
+            localStorage.setItem('vehicleRecords', JSON.stringify(vehicleRecords));
+
+            checkInsuranceExpiry(insuranceExpiry);
+            loadVehicleRecords();
+        };
+
+        if (imageInput) {
+            reader.readAsDataURL(imageInput);
+        } else {
+            reader.onload();
+        }
+    } else {
+        alert('Please fill in all fields.');
+    }
+}
+
+function loadVehicleRecords() {
+    const tableBody = document.getElementById('vehicle-body');
+    tableBody.innerHTML = '';
+
+    const vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+    const today = new Date();
+    let expiringSoon = [];
+
+    vehicleRecords.forEach((record, index) => {
+        const expiryDate = new Date(record.expiry);
+        const imageTag = record.image ? `<img src="${record.image}" style="width: 100px; height: 100px;" />` : 'No Image';
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${imageTag}</td>
+            <td>${record.name}</td>
+            <td>${record.owner}</td>
+            <td>${record.driver}</td>
+            <td>${record.license}</td>
+            <td>${record.fc}</td>
+            <td>${record.expiry}</td>
+            <td>
+                <button onclick="editRecord(${index})">Edit</button>
+                <button onclick="deleteRecord(${index})">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+
+        // Check if insurance expiry is within a month or has expired
+        const oneMonthLater = new Date(today.setMonth(today.getMonth() + 1));
+        if (expiryDate < oneMonthLater) {
+            expiringSoon.push(`${record.name} (expires on: ${record.expiry})`);
+        }
+    });
+
+    // Show a popup for expiring or expired insurance
+    if (expiringSoon.length > 0) {
+        alert(`The following vehicles' insurance is expiring soon or has expired:\n\n${expiringSoon.join('\n')}`);
+    }
+}
+
+function deleteRecord(index) {
+    let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+    vehicleRecords.splice(index, 1);
+    localStorage.setItem('vehicleRecords', JSON.stringify(vehicleRecords));
+    loadVehicleRecords();
+}
+
+function editRecord(index) {
+    let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+    const record = vehicleRecords[index];
+
+    const tableBody = document.getElementById('vehicle-body');
+    const row = tableBody.children[index];
+
+    row.innerHTML = `
+        <td><input type="file" onchange="previewImage(event)" class="vehicle-image"></td>
+        <td><input type="text" value="${record.name}" class="vehicle-name"></td>
+        <td><input type="text" value="${record.owner}" class="owner-name"></td>
+        <td><input type="text" value="${record.driver}" class="driver-name"></td>
+        <td><input type="text" value="${record.license}" class="driver-license"></td>
+        <td><input type="date" value="${record.fc}" class="vehicle-fc"></td>
+        <td><input type="date" value="${record.expiry}" class="insurance-expiry"></td>
+        <td>
+            <button onclick="updateRecord(${index})">Update</button>
+            <button onclick="cancelEdit()">Cancel</button>
+        </td>
+    `;
+}
+
+function updateRecord(index) {
+    const row = document.getElementById('vehicle-body').children[index];
+    const imageInput = row.querySelector('.vehicle-image').files[0];
+    const vehicleName = row.querySelector('.vehicle-name').value;
+    const ownerName = row.querySelector('.owner-name').value;
+    const driverName = row.querySelector('.driver-name').value;
+    const driverLicense = row.querySelector('.driver-license').value;
+    const vehicleFC = row.querySelector('.vehicle-fc').value;
+    const insuranceExpiry = row.querySelector('.insurance-expiry').value;
+
+    let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const imageBase64 = imageInput ? event.target.result : vehicleRecords[index].image;
+
+        vehicleRecords[index] = {
+            image: imageBase64,
+            name: vehicleName,
+            owner: ownerName,
+            driver: driverName,
+            license: driverLicense,
+            fc: vehicleFC,
+            expiry: insuranceExpiry
+        };
+
+        localStorage.setItem('vehicleRecords', JSON.stringify(vehicleRecords));
+
+        checkInsuranceExpiry(insuranceExpiry);
+        loadVehicleRecords();
+    };
+
+    if (imageInput) {
+        reader.readAsDataURL(imageInput);
+    } else {
+        reader.onload();
+    }
 }
 
 function previewImage(event) {
@@ -52,15 +210,43 @@ function previewImage(event) {
     }
 }
 
-function checkInsuranceExpiry(input) {
-    const expiryDate = new Date(input.value);
+function checkInsuranceExpiry(expiryDate) {
+    const expiry = new Date(expiryDate);
     const today = new Date();
 
-    // Check if the insurance is expiring in the next 30 days
-    if ((expiryDate - today) <= 30 * 24 * 60 * 60 * 1000 && expiryDate >= today) {
-        alert('Insurance is expiring soon!');
+    if (expiry < today) {
+        alert('Vehicle insurance has expired!');
+        sendSMS("Insurance expired for vehicle!");
+    } else if (expiry - today < 30 * 24 * 60 * 60 * 1000) {  // Less than a month left
+        alert('Vehicle insurance will expire soon!');
+        sendSMS("Vehicle insurance is expiring soon!");
     }
 }
+
+function sendSMS(message) {
+    const phoneNumber = '9481155714';
+    
+    // Here you'll need to integrate an SMS API like Twilio
+    // Example (using Twilio's REST API):
+    /*
+    fetch('https://api.twilio.com/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXX/Messages.json', {
+        method: 'POST',
+        body: new URLSearchParams({
+            'To': phoneNumber,
+            'From': 'YOUR_TWILIO_PHONE_NUMBER',
+            'Body': message
+        }),
+        headers: {
+            'Authorization': 'Basic ' + btoa('ACXXXXXXXXXXXXXXXXX:your_auth_token')
+        }
+    }).then(response => response.json()).then(data => console.log(data));
+    */
+    
+    console.log(`SMS to ${phoneNumber}: ${message}`);
+}
+
+
+
 
 // Calculator Functions
 let calcDisplay = document.getElementById('calc-display');

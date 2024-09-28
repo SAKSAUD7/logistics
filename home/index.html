@@ -49,22 +49,28 @@
 
     <!-- Main Content Area -->
     <main>
+        <!-- Vehicle Records Section -->
         <section id="vehicle-records" class="content-section">
             <h2>Vehicle Records</h2>
-            <table id="vehicle-table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Vehicle Name</th>
-                        <th>Insurance Expiry Date</th>
-                        <th>Alert</th>
-                    </tr>
-                </thead>
-                <tbody id="vehicle-body">
-                    <!-- Rows will be added here dynamically -->
-                </tbody>
-            </table>
-            <button onclick="addVehicleRow()">Add Vehicle</button>
+            <div id="vehicle-container">
+                <table id="vehicle-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Vehicle Name</th>
+                            <th>Owner Name</th>
+                            <th>Driver Name</th>
+                            <th>Driver License</th>
+                            <th>Vehicle FC</th>
+                            <th>Insurance Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vehicle-body">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+                <button onclick="addVehicleRow()">Add Vehicle</button>
+            </div>
         </section>
 
         <section id="transactions" class="content-section">Transactions Content</section>
