@@ -1,34 +1,69 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    background-color: #f0f8ff;
+    margin: 0;
+    padding: 20px;
 }
 
 .billing-container {
-    width: 50%;
-    margin: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
 }
 
-.billing-container h2, h3 {
+h2 {
     text-align: center;
+    color: #333;
+}
+
+h3 {
+    text-align: center;
+    color: #666;
+}
+
+.tab {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tab button:hover {
+    background-color: #0056b3;
+}
+
+.tabcontent {
+    display: none;
 }
 
 label {
-    font-weight: bold;
     display: block;
-    margin-top: 10px;
+    margin: 10px 0 5px;
 }
 
-input, textarea {
-    width: 100%;
+input[type="text"],
+input[type="number"],
+select {
+    width: calc(100% - 20px);
     padding: 10px;
-    margin-top: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 5px;
+}
+
+input:disabled {
+    background-color: #e9ecef;
 }
 
 .form-buttons {
@@ -36,35 +71,23 @@ input, textarea {
     justify-content: space-between;
 }
 
-button {
-    padding: 10px 15px;
+.form-buttons button {
     background-color: #28a745;
-    color: white;
     border: none;
-    border-radius: 5px;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
     cursor: pointer;
-    font-size: 16px;
+    border-radius: 5px;
 }
 
-button:hover {
+.form-buttons button:hover {
     background-color: #218838;
 }
 
 .bill-preview {
-    display: none;
-    width: 50%;
-    margin: 30px auto;
-    padding: 20px;
+    margin-top: 20px;
     border: 1px solid #ccc;
+    padding: 10px;
     border-radius: 5px;
-    background-color: #fff;
-}
-
-.bill-preview h2, h3 {
-    text-align: center;
-}
-
-.bill-preview p {
-    font-size: 16px;
-    margin: 5px 0;
 }

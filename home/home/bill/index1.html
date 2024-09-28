@@ -8,49 +8,129 @@
 </head>
 <body>
     <div class="billing-container">
-        <h2>Your Company Name</h2>
+        <h2> <div class="logo">
+            <img src="MBSLOGO.jpg" alt="Company Logo" style="height: 80px;">
+        </div> </h2>
         <h3>Billing Form</h3>
 
-        <form id="billing-form">
-            <label for="lr-no">LR No.:</label>
-            <input type="text" id="lr-no" required><br>
+        <!-- Customer Info Section -->
+        <div class="form-section">
+            <h4>Customer Info</h4>
+            <form id="billing-form">
+                <label for="lr-no">LR No.:</label>
+                <input type="text" id="lr-no" required>
 
-            <label for="manual-bill-no">Manual Bill No.:</label>
-            <input type="text" id="manual-bill-no" required><br>
+                <label for="manual-bill-no">Manual Bill No.:</label>
+                <input type="text" id="manual-bill-no" required>
 
-            <label for="customer-name">Customer Name:</label>
-            <input type="text" id="customer-name" required><br>
+                <label for="bill-no">Bill No.:</label>
+                <input type="text" id="bill-no" required>
 
-            <label for="item-description">Item Description:</label>
-            <textarea id="item-description" rows="3" required></textarea><br>
+                <label for="customer-name">Customer Name:</label>
+                <select id="customer-name" required>
+                    <option value="">Select Customer</option>
+                </select>
+                <button type="button" onclick="addNewOption('customer-name')">Add New Customer</button>
+                <button type="button" onclick="removeOption('customer-name')">Remove Customer</button><br>
 
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" required><br>
+                <label for="from">From:</label>
+                <select id="from" required>
+                    <option value="">Select Location</option>
+                </select>
+                <button type="button" onclick="addNewOption('from')">Add New Location</button>
+                <button type="button" onclick="removeOption('from')">Remove Location</button><br>
 
-            <label for="rate">Rate:</label>
-            <input type="number" id="rate" required><br>
+                <label for="to">To:</label>
+                <select id="to" required>
+                    <option value="">Select Destination</option>
+                </select>
+                <button type="button" onclick="addNewOption('to')">Add New Destination</button>
+                <button type="button" onclick="removeOption('to')">Remove Destination</button><br>
+            </form>
+        </div>
 
-            <label for="total">Total:</label>
-            <input type="number" id="total" disabled><br>
+        <!-- Goods Info Section -->
+        <div class="form-section">
+            <h4>Goods Info</h4>
+            <form id="goods-form">
+                <label for="consigner">Consignor:</label>
+                <select id="consigner" required>
+                    <option value="">Select Consignor</option>
+                </select>
+                <button type="button" onclick="addNewOption('consigner')">Add New Consignor</button>
+                <button type="button" onclick="removeOption('consigner')">Remove Consignor</button><br>
 
-            <div class="form-buttons">
-                <button type="button" onclick="generateBill()">View Bill</button>
-                <button type="button" onclick="printBill()">Print Bill</button>
-            </div>
-        </form>
-    </div>
+                <label for="consignee">Consignee:</label>
+                <input type="text" id="consignee" required><br>
 
-    <!-- Bill Preview Section -->
-    <div id="bill-preview" class="bill-preview">
-        <h2>Your Company Name</h2>
-        <h3>Bill Preview</h3>
-        <p><strong>LR No.:</strong> <span id="preview-lr-no"></span></p>
-        <p><strong>Manual Bill No.:</strong> <span id="preview-bill-no"></span></p>
-        <p><strong>Customer Name:</strong> <span id="preview-customer-name"></span></p>
-        <p><strong>Item Description:</strong> <span id="preview-item-desc"></span></p>
-        <p><strong>Quantity:</strong> <span id="preview-quantity"></span></p>
-        <p><strong>Rate:</strong> <span id="preview-rate"></span></p>
-        <p><strong>Total:</strong> <span id="preview-total"></span></p>
+                <label for="goods">Goods:</label>
+                <select id="goods" required>
+                    <option value="">Select Goods</option>
+                </select>
+                <button type="button" onclick="addNewOption('goods')">Add New Goods</button>
+                <button type="button" onclick="removeOption('goods')">Remove Goods</button><br>
+
+                <label for="no-articles">No of Articles:</label>
+                <input type="number" id="no-articles" required oninput="calculateTotal()"><br>
+            </form>
+        </div>
+
+        <!-- Billing Details Section -->
+        <div class="form-section">
+            <h4>Billing Details</h4>
+            <form id="billing-details-form">
+                <label for="rate-per-article">Rate Per Article:</label>
+                <input type="number" id="rate-per-article" required oninput="calculateTotal()"><br>
+
+                <label for="gst">GST %:</label>
+                <select id="gst" required onchange="calculateTotal()">
+                    <option value="5">5%</option>
+                    <option value="12">12%</option>
+                    <option value="18">18%</option>
+                </select>
+                <button type="button" onclick="addNewOption('gst')">Add New GST</button>
+                <button type="button" onclick="removeOption('gst')">Remove GST</button><br>
+
+                <label for="gst-amt">GST Amount:</label>
+                <input type="number" id="gst-amt" required><br>
+
+                <label for="freight">Freight:</label>
+                <input type="number" id="freight" required oninput="calculateTotal()"><br>
+
+                <label for="total">Total Amount:</label>
+                <input type="number" id="total" required><br>
+
+                <label for="date">Date:</label>
+                <input type="date" id="date" required><br>
+
+                <label for="time">Time:</label>
+                <input type="time" id="time" required><br>
+
+                <div class="form-buttons">
+                    <button type="button" onclick="generateBill()">View Bill</button>
+                    <button type="button" onclick="printBill()">Print Bill</button>
+                    <button type="button" onclick="saveBill()">Save Bill</button>
+                    <button type="button" onclick="modifyBill()">Modify Bill</button>
+                    <button type="button" onclick="deleteBill()">Delete Bill</button>
+                    <button type="button" onclick="closeForm()">Close</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bill Preview Section -->
+        <div id="bill-preview" class="bill-preview">
+            <h3><div class="logo">
+                <img src="MBSLOGO.jpg" alt="Company Logo" style="height: 80px;">
+            </div></h3>
+            <p><strong>LR No.:</strong> <span id="preview-lr-no"></span></p>
+            <p><strong>Manual Bill No.:</strong> <span id="preview-manual-bill-no"></span></p>
+            <p><strong>Bill No.:</strong> <span id="preview-bill-no"></span></p>
+            <p><strong>Customer Name:</strong> <span id="preview-customer-name"></span></p>
+            <p><strong>Goods:</strong> <span id="preview-goods"></span></p>
+            <p><strong>No of Articles:</strong> <span id="preview-no-articles"></span></p>
+            <p><strong>GST Amount:</strong> <span id="preview-gst-amt"></span></p>
+            <p><strong>Total Amount:</strong> <span id="preview-total"></span></p>
+        </div>
     </div>
 
     <script src="billing-script.js"></script>
