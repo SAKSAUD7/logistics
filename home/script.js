@@ -43,6 +43,31 @@ window.onload = function() {
     showSection('vehicle-records'); // Default to vehicle records
     showBillingSection('bill'); // Default to billing tab
 };
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.content-section');
+    sections.forEach(section => {
+        section.style.display = 'none'; // Hide all sections
+    });
+
+    document.getElementById(sectionId).style.display = 'block'; // Show the clicked section
+    
+    // Show sub-tabs for billing section
+    if (sectionId === 'billing') {
+        document.getElementById('billing-sub-tabs').style.display = 'flex';
+    } else {
+        document.getElementById('billing-sub-tabs').style.display = 'none';
+    }
+}
+
+function showBillingSection(sectionId) {
+    if (sectionId === 'bill') {
+        // Load index1.html inside the 'billing' section using an iframe
+        document.getElementById('billing-content').innerHTML = '<iframe src="home/bill/index1.html" style="width: 100%; height: 100vh; border: none;"></iframe>';
+    } else {
+        // Handle other sections if needed
+        document.getElementById('billing-content').innerHTML = '<p>' + sectionId + ' content will go here.</p>';
+    }
+}
 
 // Vehicle Records Functions
 document.addEventListener("DOMContentLoaded", loadVehicleRecords);

@@ -161,58 +161,44 @@ header {
 }
 
 
-/* Sidebar Styling */
-.sidebar {
-    background-color: #2c3e50;
-    color: white;
-    padding: 15px;
-    width: 250px;
-    position: static;
-    top: 125px;
-    bottom: 0;
-}
-
-.sidebar ul {
+/* Secondary Navigation Bar */
+.secondary-nav ul {
+    display: flex;
+    justify-content: space-around;
     list-style: none;
+    background-color: #34495e;
+    padding: 10px;
+    margin-top: 10px;
 }
 
-.sidebar ul li a {
+.secondary-nav ul li a {
     color: white;
     text-decoration: none;
-    display: block;
     padding: 10px;
 }
 
-.sidebar ul li a:hover {
-    background-color: #34495e;
+.secondary-nav ul li a:hover {
+    background-color: #2c3e50;
 }
 
-/* Content Section */
-.content-section {
-    display: none; /* Hide content sections by default */
-    padding: 20px;
-    margin-left: 260px;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Billing Tabs */
-.billing-tabs ul {
+/* Billing Sub-Tabs */
+.billing-sub-tabs ul {
+    display: flex;
+    justify-content: space-around;
     list-style: none;
-    padding-left: 15px;
-    margin-top: 20px;
+    background-color: #2c3e50;
+    padding: 10px;
 }
 
-.billing-tabs ul li a {
+.billing-sub-tabs ul li a {
     color: white;
     text-decoration: none;
+    padding: 10px;
 }
 
-.billing-tabs ul li a:hover {
+.billing-sub-tabs ul li a:hover {
     background-color: #34495e;
 }
-
 /* Calculator Styles */
 .calculator {
     margin: 20px auto;

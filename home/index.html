@@ -32,23 +32,29 @@
         </div>
     </header>
 
-    <!-- Sidebar Tabs -->
-    <aside class="sidebar">
-        <ul>
-            <li><a href="#" onclick="showSection('calculator')">Calculator</a></li>
-            <li><a href="#" onclick="showSection('notepad')">Notepad</a></li>
-            <li><a href="#" onclick="showSection('billing')">Billing Software</a></li>
-        </ul>
-        
-        <!-- Billing Software Sub-Tabs -->
-        <div class="billing-tabs">
-            <ul>
-                <li><a href="home/bill/index1.html" onclick="showBillingSection('bill')">Bill</a></li>
-                <li><a href="#" onclick="showBillingSection('receipts')">Res</a></li>
-                <li><a href="#" onclick="showBillingSection('expense')">Expense</a></li>
-            </ul>
-        </div>
-    </aside>
+<!-- Secondary Navigation Bar -->
+<nav class="secondary-nav">
+    <ul>
+        <li><a href="#" onclick="showSection('calculator')">Calculator</a></li>
+        <li><a href="#" onclick="showSection('notepad')">Notepad</a></li>
+        <li><a href="#" onclick="showSection('billing')">Billing Software</a></li>
+    </ul>
+</nav>
+<!-- Billing Section in the Main Content -->
+<div id="billing" class="content-section" style="display: none;">
+    <div id="billing-content">
+        <!-- The content (like index1.html) will be loaded here -->
+    </div>
+</div>
+
+<!-- Billing Sub-Tabs -->
+<div class="billing-sub-tabs" id="billing-sub-tabs" style="display: none;">
+    <ul>
+        <li><a href="#" onclick="showBillingSection('bill')">Bill</a></li>
+        <li><a href="#" onclick="showBillingSection('receipts')">Receipts</a></li>
+        <li><a href="#" onclick="showBillingSection('expense')">Expense</a></li>
+    </ul>
+</div>
 
     <!-- Main Content Area -->
     <main>
