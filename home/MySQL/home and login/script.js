@@ -411,3 +411,30 @@ function sortBills() {
 
 // Call fetchBills when the page loads
 window.onload = fetchBills;
+
+
+
+app.post('/api/bills', (req, res) => {
+    const { lrNo, manualBillNo, billNo, customerName, from, to, consignor, consignee, goods, noOfArticles, ratePerArticle, gstPercentage, gstAmount, freight, totalAmount, date, time } = req.body;
+
+    const query = 'INSERT INTO bills (lrNo, manualBillNo, billNo, customerName, `from`, `to`, consignor, consignee, goods, noOfArticles, ratePerArticle, gstPercentage, gstAmount, freight, totalAmount, date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    
+    connection.query(query, [lrNo, manualBillNo, billNo, customerName, from, to, consignor, consignee, goods, noOfArticles, ratePerArticle, gstPercentage, gstAmount, freight, totalAmount, date, time], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: "Error saving bill", error: err });
+        }
+        res.status(201).json({ message: "Bill saved successfully", billId: result.insertId });
+    });
+});
+
+
+// Endpoint to fetch bills
+app.get('/api/get-bills', (req, res) => {
+    db.query('SELECT * FROM bills ORDER BY date DESC', (error, results) => {
+        if (error) {
+            console.error('Error fetching bills:', error);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.json(results);
+    });
+});

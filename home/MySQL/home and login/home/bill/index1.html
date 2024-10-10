@@ -152,9 +152,11 @@
             <form id="billing-form">
                 <label for="lr-no">LR No.:</label>
                 <input type="text" id="lr-no" required>
+    
 
                 <label for="manual-bill-no">Manual Bill No.:</label>
                 <input type="text" id="manual-bill-no" required>
+            
 
                 <label for="bill-no">Bill No.:</label>
                 <input type="text" id="bill-no" required>
@@ -163,7 +165,11 @@
                 <input type="date" id="date" required><br>
 
                 <label for="gst-paid-by">GST Paid By:</label>
-                <input type="text" id="gst-paid-by" required><br>
+                <select id="gst-paid-by" required>
+                    <option value="consigner">consigner</option>
+                    <option value="consignee">consignee</option>
+                    <option value="To be billed">To be billed</option>
+                </select><br>
 
                 <label for="payment-mode">Payment Mode:</label>
                 <select id="payment-mode" required>
@@ -172,13 +178,7 @@
                     <option value="online">Online</option>
                 </select><br>
 
-                <label for="customer-name">Customer Name:</label>
-                <select id="customer-name" required>
-                    <option value="">Select Customer</option>
-                </select>
-                <button type="button" onclick="addNewOption('customer-name')">Add New Customer</button>
-                <button type="button" onclick="removeOption('customer-name')">Remove Customer</button><br>
-
+               
                 <label for="from">From:</label>
                 <select id="from" required>
                     <option value="">Select Location</option>
@@ -295,12 +295,16 @@
             <td style="border: 1px solid black; padding: 5px;"><strong>To:</strong> <span id="preview-to"></span></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px;"><strong>Consignor Details:</strong> <span id="preview-consignor"></span></td>
-            <td style="border: 1px solid black; padding: 5px;"><strong>Consignee Details:</strong> <span id="preview-consignee"></span></td>
+            <td style="border: 1px solid black; padding: 5px;"><strong>L.R. No:</strong> <span id="preview-lr-no"></span></td>
+            <td style="border: 1px solid black; padding: 5px;"><strong>Date:</strong> <span id="preview-date"></span></td>
         </tr>
         <tr>
-            <td style="border: 1px solid black; padding: 5px;"><strong>Name:</strong> <span id="preview-consignor-name"></span></td>
-            <td style="border: 1px solid black; padding: 5px;"><strong>Name:</strong> <span id="preview-consignee-name"></span></td>
+            <td style="border: 1px solid black; padding: 5px;"><strong>Consignor:</strong> <span id="preview-consignor"></span></td>
+            <td style="border: 1px solid black; padding: 5px;"><strong>Consignee:</strong> <span id="preview-consignee"></span></td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; padding: 5px;"><strong>Consignor GST:</strong> <span id="preview-consignor-name"></span></td>
+            <td style="border: 1px solid black; padding: 5px;"><strong>Consignee GST:</strong> <span id="preview-consignee-name"></span></td>
         </tr>
         <tr>
             <td style="border: 1px solid black; padding: 5px;"><strong>Address:</strong> <span id="preview-consignor-address"></span></td>
@@ -309,34 +313,26 @@
     </table>
 
     <table class="bill-details" style="width: 100%; margin: 20px 0; border-collapse: collapse;">
-        <tr>
-            <td style="border: 1px solid black; padding: 5px;"><strong>L.R. No:</strong> <span id="preview-lr-no"></span></td>
-            <td style="border: 1px solid black; padding: 5px;"><strong>Date:</strong> <span id="preview-date"></span></td>
-            <td style="border: 1px solid black; padding: 5px;"><strong>BR No:</strong> <span id="preview-bill-no"></span></td>
-        </tr>
+       
     </table>
 
-    <table style="width: 100%; border-collapse: collapse;">
+    <table id="preview-table" style="width: 100%; margin: 10px 0; border-collapse: collapse;">
         <thead>
             <tr style="background-color: #003366; color: white;">
-                <th style="border: 1px solid black; padding: 8px;">No</th>
-                <th style="border: 1px solid black; padding: 8px;">Description</th>
+                <th style="border: 1px solid black; padding: 8px;">Goods</th>
                 <th style="border: 1px solid black; padding: 8px;">No of Articles</th>
                 <th style="border: 1px solid black; padding: 8px;">Rate per Article</th>
-                <th style="border: 1px solid black; padding: 8px;">Amount</th>
+                <th style="border: 1px solid black; padding: 8px;">GST %</th>
+                <th style="border: 1px solid black; padding: 8px;">GST Amount</th>
+                <th style="border: 1px solid black; padding: 8px;">Freight</th>
+                <th style="border: 1px solid black; padding: 8px;">Total Amount</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td style="border: 1px solid black; padding: 8px;">1</td>
-                <td style="border: 1px solid black; padding: 8px;"><span id="preview-goods"></span></td>
-                <td style="border: 1px solid black; padding: 8px;"><span id="preview-no-articles"></span></td>
-                <td style="border: 1px solid black; padding: 8px;"><span id="preview-rate-per-article"></span></td>
-                <td style="border: 1px solid black; padding: 8px;"><span id="preview-amount"></span></td>
-            </tr>
-            <!-- Add more rows as needed -->
+        <tbody id="preview-entries">
+            <!-- Preview entries will be populated here dynamically -->
         </tbody>
     </table>
+
 
     <p class="notes" style="font-size: 12px; margin-top: 20px;">Note: Carriers are not responsible for leakage. No charge for liquid drums and glassware. The company is not responsible for loss due to any "ACT OF GOD".</p>
     
@@ -349,6 +345,12 @@
         <p>For MBS LORRY SERVICE</p>
     </div>
 </div>
+
+
+
+
+
+
 
 
     <script src="billing-script.js"></script>

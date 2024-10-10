@@ -20,6 +20,52 @@ function calculateTotal() {
     document.getElementById("total").value = totalAmount.toFixed(2); // Show total amount
 }
 
+
+// Function to calculate total for each goods entry
+function calculateRowTotal(input) {
+    const row = input.closest('tr');
+    const noOfArticles = parseFloat(row.querySelector('.no-articles').value) || 0;
+    const ratePerArticle = parseFloat(row.querySelector('.rate-per-article').value) || 0;
+    const gstRate = parseFloat(row.querySelector('.gst').value) || 0;
+ 
+   
+    if (noOfArticles && ratePerArticle) { // Check if values are valid
+        const gstAmount = (noOfArticles * ratePerArticle * gstRate) / 100;
+        const freight = parseFloat(row.querySelector('.freight').value) || 0;
+        const totalAmount = (noOfArticles * ratePerArticle) + gstAmount + freight;
+
+        row.querySelector('.gst-amt').value = gstAmount.toFixed(2);
+        row.querySelector('.total').value = totalAmount.toFixed(2);
+
+        calculateGrandTotal(); // Update the grand total after calculating row total
+    } else {
+        // Handle case where inputs are not valid (reset values)
+        row.querySelector('.gst-amt').value = '';
+        row.querySelector('.total').value = '';
+    }
+}
+
+
+// Function to calculate the grand total
+function calculateGrandTotal() {
+    const totalElements = document.querySelectorAll('.total');
+    let grandTotal = 0;
+
+    totalElements.forEach(element => {
+        grandTotal += parseFloat(element.value) || 0;
+    });
+
+    document.getElementById('total-amount').innerText = grandTotal.toFixed(2);
+}
+
+// Attach event listeners for other inputs to calculate totals
+document.querySelectorAll('.no-articles, .rate-per-article, .freight, .gst').forEach(input => {
+    input.addEventListener('input', function() {
+        calculateRowTotal(this);
+    });
+});
+
+
 // Function to add a new option
 function addNewOption(selectId) {
     const select = document.getElementById(selectId);
@@ -41,121 +87,66 @@ function removeOption(selectId) {
     }
 }
 
+
+
+
+
 // Function to generate the bill preview
 function generateBill() {
+    // Update bill preview with the values from the form
+    document.getElementById("preview-from").innerText = document.getElementById("from").value;
+    document.getElementById("preview-to").innerText = document.getElementById("to").value;
+    document.getElementById("preview-consignor").innerText = document.getElementById("consigner").value;
+    document.getElementById("preview-consignee").innerText = document.getElementById("consignee").value;
+    document.getElementById("preview-consignee-address").innerText = document.getElementById("consignee-address").value;
+    document.getElementById("preview-consignor-address").innerText = document.getElementById("consigner-address").value;
+    document.getElementById("preview-date").innerText = document.getElementById("date").value;
     document.getElementById("preview-lr-no").innerText = document.getElementById("lr-no").value;
-    document.getElementById("preview-manual-bill-no").innerText = document.getElementById("manual-bill-no").value;
-    document.getElementById("preview-bill-no").innerText = document.getElementById("bill-no").value;
-    document.getElementById("preview-customer-name").innerText = document.getElementById("customer-name").value;
-    document.getElementById("preview-goods").innerText = document.getElementById("goods").value;
-    document.getElementById("preview-no-articles").innerText = document.getElementById("no-articles").value;
+
+    // Update total amounts
+    const goodsEntries = document.querySelectorAll('#goods-entries tr');
+    const previewEntries = document.getElementById('preview-entries');
+    previewEntries.innerHTML = ''; // Clear previous entries
+    let grandTotal = 0;
+
+    goodsEntries.forEach((entry) => {
+        const goods = entry.querySelector('.goods').value;
+        const noArticles = entry.querySelector('.no-articles').value || 0;
+        const ratePerArticle = entry.querySelector('.rate-per-article').value || 0;
+        const gstAmount = entry.querySelector('.gst-amt').value || 0;
+        const freight = entry.querySelector('.freight').value || 0;
+        const total = entry.querySelector('.total').value || 0;
+
+        if (goods) { // Only add to preview if goods are selected
+            const newRow = `
+                <tr>
+                    <td style="border: 1px solid black; padding: 8px;">${goods}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${noArticles}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${ratePerArticle}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${entry.querySelector('.gst').value}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${gstAmount}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${freight}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${total}</td>
+                </tr>
+            `;
+            previewEntries.insertAdjacentHTML('beforeend', newRow);
+            grandTotal += parseFloat(total);
+        }
+    });
+
+    // Update total amounts in the preview
     document.getElementById("preview-gst-amt").innerText = document.getElementById("gst-amt").value;
-    document.getElementById("preview-total").innerText = document.getElementById("total").value;
+    document.getElementById("preview-total").innerText = grandTotal.toFixed(2);
 
     document.getElementById("bill-preview").style.display = 'block'; // Show the bill preview
 }
 
 
-// Function to add a new goods entry
-function addGoodsEntry() {
-    const goodsTable = document.getElementById('goods-entries');
-    const newRow = document.createElement('tr');
+//<!-- From and To Section -->
 
-    newRow.innerHTML = `
-        <td>
-            <select class="goods" required>
-                <option value="">Select Goods</option>
-                <!-- Add goods options here -->
-            </select>
-        </td>
-        <td><input type="number" class="no-articles" required oninput="calculateTotal(this)"></td>
-        <td><input type="number" class="rate-per-article" required oninput="calculateTotal(this)"></td>
-        <td>
-            <select class="gst" required onchange="calculateTotal(this)">
-                <option value="5">5%</option>
-                <option value="12">12%</option>
-                <option value="18">18%</option>
-            </select>
-        </td>
-        <td><input type="number" class="gst-amt" required readonly></td>
-        <td><input type="number" class="freight" required oninput="calculateTotal(this)"></td>
-        <td><input type="number" class="total" required readonly></td>
-        <td><button type="button" onclick="removeGoodsEntry(this)">Remove</button></td>
-    `;
-    goodsTable.appendChild(newRow);
-}
+const fromList = ["Bengaluru", "Yeshwanthpur", "OT Pet"];
+const toList = ["KGF", "Bangarpet", "Kolar"];
 
-// Function to remove a goods entry
-function removeGoodsEntry(button) {
-    const row = button.closest('tr');
-    row.remove();
-    calculateGrandTotal();
-}
-
-// Function to calculate total for each goods entry
-function calculateTotal(input) {
-    const row = input.closest('tr');
-    const noOfArticles = row.querySelector('.no-articles').value || 0;
-    const ratePerArticle = row.querySelector('.rate-per-article').value || 0;
-    const gstRate = row.querySelector('.gst').value || 0;
-
-    const gstAmount = (noOfArticles * ratePerArticle * gstRate) / 100;
-    const freight = row.querySelector('.freight').value || 0;
-
-    const totalAmount = (noOfArticles * ratePerArticle) + parseFloat(gstAmount) + parseFloat(freight);
-
-    row.querySelector('.gst-amt').value = gstAmount.toFixed(2);
-    row.querySelector('.total').value = totalAmount.toFixed(2);
-
-    calculateGrandTotal();
-}
-
-// Function to calculate the grand total
-function calculateGrandTotal() {
-    const totalElements = document.querySelectorAll('.total');
-    let grandTotal = 0;
-
-    totalElements.forEach(element => {
-        grandTotal += parseFloat(element.value) || 0;
-    });
-
-    document.getElementById('total-amount').innerText = grandTotal.toFixed(2);
-}
-
-// Function to generate the bill preview
-function generateBill() {
-    // Update bill preview with the values from the form
-    document.getElementById('preview-from').innerText = document.getElementById('from').value;
-    document.getElementById('preview-to').innerText = document.getElementById('to').value;
-    document.getElementById('preview-consignor').innerText = document.getElementById('consigner').value;
-    document.getElementById('preview-consignee').innerText = document.getElementById('consignee').value;
-    document.getElementById('preview-consignee-address').innerText = document.getElementById('consignee-address').value;
-
-    const goodsEntries = document.getElementById('goods-entries').children;
-    const previewGoodsDetails = document.getElementById('preview-goods-details');
-    previewGoodsDetails.innerHTML = '';
-
-    for (const row of goodsEntries) {
-        const goods = row.querySelector('.goods').value;
-        const noOfArticles = row.querySelector('.no-articles').value;
-        const ratePerArticle = row.querySelector('.rate-per-article').value;
-        const gstRate = row.querySelector('.gst').value;
-        const gstAmount = row.querySelector('.gst-amt').value;
-        const freight = row.querySelector('.freight').value;
-        const total = row.querySelector('.total').value;
-
-        const newRow = `<tr>
-            <td style="border: 1px solid black; padding: 8px;">${goods}</td>
-            <td style="border: 1px solid black; padding: 8px;">${noOfArticles}</td>
-            <td style="border: 1px solid black; padding: 8px;">${ratePerArticle}</td>
-            <td style="border: 1px solid black; padding: 8px;">${gstRate}</td>
-            <td style="border: 1px solid black; padding: 8px;">${gstAmount}</td>
-            <td style="border: 1px solid black; padding: 8px;">${freight}</td>
-            <td style="border: 1px solid black; padding: 8px;">${total}</td>
-        </tr>`;
-        previewGoodsDetails.innerHTML += newRow;
-    }
-}
 
 //<!-- Consignor and Consignee Section -->
 
@@ -177,7 +168,8 @@ function populateSelectOptions(selectElementId, optionsArray) {
 // Call the function to populate the select elements on page load
 populateSelectOptions('consigner', consignersList);
 populateSelectOptions('consignee', consigneesList);
-
+populateSelectOptions('from', fromList);
+populateSelectOptions('to', toList);
 
 function addNewOption(selectId) {
     const selectElement = document.getElementById(selectId);
@@ -202,10 +194,10 @@ function removeOption(selectId) {
 //<!-- Goods Info Section -->
 
 const goodsList = [
-    { id: 1, name: "a Item A" },
-    { id: 2, name: "b Item B" },
-    { id: 3, name: "c Item C" },
-    { id: 4, name: "d Item D" },
+    { id: 1, name: "a Item A", gst: 5 },
+    { id: 2, name: "b Item B", gst: 5 },
+    { id: 3, name: "c Item C", gst: 5 },
+    { id: 4, name: "d Item D", gst: 5 },
     // Add more items as needed
 ];
 
@@ -223,6 +215,15 @@ function populateGoodsDropdown(selectElement) {
         option.textContent = good.name; // Use the item's name as the text
         selectElement.appendChild(option);
     });
+
+    // Add onchange event listener to recalculate when a new good is selected
+    selectElement.addEventListener('change', function() {
+        const selectedGood = goodsList.find(good => good.id === parseInt(selectElement.value));
+        const gstInput = selectElement.closest('tr').querySelector('.gst');
+        gstInput.value = selectedGood ? selectedGood.gst : 0; // Set GST based on selected good
+
+        calculateRowTotal(selectElement); // Call the calculate function for the current row
+    });
 }
 
 // Function to add a goods entry
@@ -232,29 +233,40 @@ function addGoodsEntry() {
 
     newRow.innerHTML = `
         <td>
-            <select class="goods" required onchange="populateGoodsDropdown(this)">
+            <select class="goods" required>
                 <!-- Options will be populated by JavaScript -->
             </select>
         </td>
-        <td><input type="number" class="no-articles" required oninput="calculateTotal(this)"></td>
-        <td><input type="number" class="rate-per-article" required oninput="calculateTotal(this)"></td>
+        <td><input type="number" class="no-articles" required></td>
+        <td><input type="number" class="rate-per-article" required></td>
         <td>
-            <select class="gst" required onchange="calculateTotal(this)">
+            <select class="gst" required>
                 <option value="5">5%</option>
                 <option value="12">12%</option>
                 <option value="18">18%</option>
             </select>
         </td>
-        <td><input type="number" class="gst-amt" required readonly></td>
-        <td><input type="number" class="freight" required oninput="calculateTotal(this)"></td>
-        <td><input type="number" class="total" required readonly></td>
+        <td><input type="number" class="gst-amt" readonly></td>
+        <td><input type="number" class="freight" required></td>
+        <td><input type="number" class="total" readonly></td>
         <td><button type="button" onclick="removeGoodsEntry(this)">Remove</button></td>
     `;
 
+
+
     goodsEntries.appendChild(newRow);
+
+
     // Populate the new goods dropdown
     const goodsSelect = newRow.querySelector('.goods');
     populateGoodsDropdown(goodsSelect);
+}
+
+  // Function to remove a goods entry
+function removeGoodsEntry(button) {
+    const row = button.closest('tr');
+    row.remove();
+    calculateGrandTotal();
 }
 
 // Call this function when the page loads to populate any existing rows
@@ -281,93 +293,96 @@ function printBill() {
 }
 
 
-document.getElementById("billing-form").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent the form from submitting the traditional way
-
-    // Get values from the form
-    const lrNo = document.getElementById("lr-no").value;
-    const manualBillNo = document.getElementById("manual-bill-no").value;
-    const billNo = document.getElementById("bill-no").value;
-    const customerName = document.getElementById("customer-name").value;
-    const fromLocation = document.getElementById("from").value;
-    const toLocation = document.getElementById("to").value;
-    const consignor = document.getElementById("consignor").value;
-    const consignee = document.getElementById("consignee").value;
-    const goods = document.getElementById("goods").value;
-    const noArticles = parseInt(document.getElementById("no-articles").value);
-    const ratePerArticle = parseFloat(document.getElementById("rate-per-article").value);
-    const gstAmt = parseFloat(document.getElementById("gst-amt").value);
-    const freight = parseFloat(document.getElementById("freight").value);
-    const total = parseFloat(document.getElementById("total").value);
-
-    // Create a bill object
-    const bill = {
-        lrNo,
-        manualBillNo,
-        billNo,
-        customerName,
-        fromLocation,
-        toLocation,
-        consignor,
-        consignee,
-        goods,
-        noArticles,
-        ratePerArticle,
-        gstAmt,
-        freight,
-        total,
+async function saveBill() {
+    const billData = {
+        lr_no: document.getElementById('lr_no').value,
+        manual_bill_no: document.getElementById('manual_bill_no').value,
+        // Add other fields as necessary
     };
 
-    // Save to local storage
-    saveBill(bill);
-    displayBills();
-    this.reset(); // Reset the form
+    try {
+        // Make an API call to save the bill
+        const response = await fetch('/api/save-bill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(billData),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to save the bill');
+        }
+        alert('Bill saved successfully!');
+    } catch (error) {
+        console.error('Error saving bill:', error);
+        alert('There was an error saving the bill. Please try again.');
+    }
+}
+
+
+
+
+// Function to modify the bill (simulation)
+function modifyBill() {
+    alert("Modify Bill functionality not implemented yet.");
+    // Implement modify logic
+
+    async function fetchReportData() {
+        try {
+            const response = await fetch('http://localhost:3000/api/bills');
+            const bills = await response.json();
+    
+            // Get the reports section and clear previous content
+            const reportsSection = document.getElementById("reports-section");
+            reportsSection.innerHTML = "";
+    
+            // Iterate through each bill and create HTML elements to display the data
+            bills.forEach((bill, index) => {
+                const billRow = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${bill.lrNo}</td>
+                        <td>${bill.billNo}</td>
+                        <td>${bill.customerName}</td>
+                        <td>${bill.totalAmount}</td>
+                        <td>${bill.date}</td>
+                        <td>${bill.time}</td>
+                    </tr>
+                `;
+                reportsSection.innerHTML += billRow;
+            });
+        } catch (error) {
+            console.error("Error fetching report data:", error);
+        }
+    }
+    
+    // Call the fetchReportData function on page load or after saving a bill
+    fetchReportData();
+
+
+}
+
+// Function to delete the bill (simulation)
+function deleteBill() {
+    alert("Delete Bill functionality not implemented yet.");
+    // Implement delete logic
+}
+
+
+// Function to close the form
+function closeForm() {
+    document.getElementById("billing-form").reset();
+    document.getElementById("goods-form").reset();
+    document.getElementById("billing-details-form").reset();
+    document.getElementById("bill-preview").style.display = 'none'; // Hide the bill preview
+}
+
+// Other existing functions remain unchanged
+
+// Ensure to call addEventListener for input fields and buttons instead of using inline handlers
+document.querySelectorAll('.no-articles, .rate-per-article, .freight, .gst').forEach(input => {
+    input.addEventListener('input', function () {
+        calculateRowTotal(this);
+    });
 });
 
-// Function to save bill to local storage
-function saveBill(bill) {
-    let bills = JSON.parse(localStorage.getItem("bills")) || [];
-    bills.push(bill);
-    localStorage.setItem("bills", JSON.stringify(bills));
-}
-
-// Function to display bills
-function displayBills() {
-    const billList = document.getElementById("bill-list");
-    billList.innerHTML = ""; // Clear existing list
-    const bills = JSON.parse(localStorage.getItem("bills")) || [];
-
-    bills.forEach((bill, index) => {
-        const billItem = document.createElement("div");
-        billItem.innerHTML = `
-            <p><strong>LR No:</strong> ${bill.lrNo}</p>
-            <p><strong>Manual Bill No:</strong> ${bill.manualBillNo}</p>
-            <p><strong>Bill No:</strong> ${bill.billNo}</p>
-            <p><strong>Customer Name:</strong> ${bill.customerName}</p>
-            <p><strong>From:</strong> ${bill.fromLocation}</p>
-            <p><strong>To:</strong> ${bill.toLocation}</p>
-            <p><strong>Consignor:</strong> ${bill.consignor}</p>
-            <p><strong>Consignee:</strong> ${bill.consignee}</p>
-            <p><strong>Goods:</strong> ${bill.goods}</p>
-            <p><strong>No. of Articles:</strong> ${bill.noArticles}</p>
-            <p><strong>Rate per Article:</strong> ${bill.ratePerArticle}</p>
-            <p><strong>GST Amount:</strong> ${bill.gstAmt}</p>
-            <p><strong>Freight:</strong> ${bill.freight}</p>
-            <p><strong>Total:</strong> ${bill.total}</p>
-            <button onclick="deleteBill(${index})">Delete</button>
-            <hr>
-        `;
-        billList.appendChild(billItem);
-    });
-}
-
-// Function to delete a bill
-function deleteBill(index) {
-    let bills = JSON.parse(localStorage.getItem("bills")) || [];
-    bills.splice(index, 1); // Remove the bill at the given index
-    localStorage.setItem("bills", JSON.stringify(bills));
-    displayBills(); // Update the displayed bills
-}
-
-// Display bills when the page loads
-displayBills();
