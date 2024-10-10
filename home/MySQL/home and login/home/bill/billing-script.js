@@ -21,25 +21,31 @@ function calculateTotal() {
 }
 
 
-// Function to calculate total for each goods entry
 function calculateRowTotal(input) {
     const row = input.closest('tr');
     const noOfArticles = parseFloat(row.querySelector('.no-articles').value) || 0;
     const ratePerArticle = parseFloat(row.querySelector('.rate-per-article').value) || 0;
     const gstRate = parseFloat(row.querySelector('.gst').value) || 0;
- 
-   
-    if (noOfArticles && ratePerArticle) { // Check if values are valid
+    const freight = parseFloat(row.querySelector('.freight').value) || 0;
+
+    // Validate input values and reset the row if invalid
+    if (!noOfArticles || !ratePerArticle || noOfArticles < 0 || ratePerArticle < 0) {
+        row.querySelector('.gst-amt').value = '0.00';
+        row.querySelector('.total').value = '0.00';
+        return;
+    }
+
+    // Ensure noOfArticles and ratePerArticle are positive values
+    if (noOfArticles > 0 && ratePerArticle > 0) { 
         const gstAmount = (noOfArticles * ratePerArticle * gstRate) / 100;
-        const freight = parseFloat(row.querySelector('.freight').value) || 0;
         const totalAmount = (noOfArticles * ratePerArticle) + gstAmount + freight;
 
         row.querySelector('.gst-amt').value = gstAmount.toFixed(2);
         row.querySelector('.total').value = totalAmount.toFixed(2);
 
-        calculateGrandTotal(); // Update the grand total after calculating row total
+        calculateGrandTotal(); // Update grand total after calculating the row total
     } else {
-        // Handle case where inputs are not valid (reset values)
+        // Reset values if inputs are not valid
         row.querySelector('.gst-amt').value = '';
         row.querySelector('.total').value = '';
     }
@@ -55,14 +61,14 @@ function calculateGrandTotal() {
         grandTotal += parseFloat(element.value) || 0;
     });
 
-    document.getElementById('total-amount').innerText = grandTotal.toFixed(2);
+    document.getElementById('total-amount').value = grandTotal.toFixed(2);
 }
 
 // Attach event listeners for other inputs to calculate totals
-document.querySelectorAll('.no-articles, .rate-per-article, .freight, .gst').forEach(input => {
-    input.addEventListener('input', function() {
-        calculateRowTotal(this);
-    });
+document.addEventListener('input', function (event) {
+    if (event.target.matches('.no-articles, .rate-per-article, .freight, .gst')) {
+        calculateRowTotal(event.target);
+    }
 });
 
 
@@ -110,17 +116,18 @@ function generateBill() {
     let grandTotal = 0;
 
     goodsEntries.forEach((entry) => {
-        const goods = entry.querySelector('.goods').value;
+        const goodsId = parseInt(entry.querySelector('.goods').value);
+        const selectedGood = goodsList.find(good => good.id === goodsId); // Get the goods object by its ID
         const noArticles = entry.querySelector('.no-articles').value || 0;
         const ratePerArticle = entry.querySelector('.rate-per-article').value || 0;
         const gstAmount = entry.querySelector('.gst-amt').value || 0;
         const freight = entry.querySelector('.freight').value || 0;
         const total = entry.querySelector('.total').value || 0;
 
-        if (goods) { // Only add to preview if goods are selected
+        if (selectedGood) { // Only add to preview if a valid good is selected
             const newRow = `
                 <tr>
-                    <td style="border: 1px solid black; padding: 8px;">${goods}</td>
+                    <td style="border: 1px solid black; padding: 8px;">${selectedGood.name}</td> <!-- Use goods name -->
                     <td style="border: 1px solid black; padding: 8px;">${noArticles}</td>
                     <td style="border: 1px solid black; padding: 8px;">${ratePerArticle}</td>
                     <td style="border: 1px solid black; padding: 8px;">${entry.querySelector('.gst').value}</td>
@@ -194,10 +201,10 @@ function removeOption(selectId) {
 //<!-- Goods Info Section -->
 
 const goodsList = [
-    { id: 1, name: "a Item A", gst: 5 },
-    { id: 2, name: "b Item B", gst: 5 },
-    { id: 3, name: "c Item C", gst: 5 },
-    { id: 4, name: "d Item D", gst: 5 },
+    { id: 1, name: "Box", gst: 5 },
+    { id: 2, name: "Big Box", gst: 5 },
+    { id: 3, name: "Bag", gst: 5 },
+    { id: 4, name: "BigBag", gst: 5 },
     // Add more items as needed
 ];
 
@@ -260,6 +267,10 @@ function addGoodsEntry() {
     // Populate the new goods dropdown
     const goodsSelect = newRow.querySelector('.goods');
     populateGoodsDropdown(goodsSelect);
+
+    newRow.querySelectorAll('.no-articles, .rate-per-article, .gst, .freight').forEach(input => {
+        input.addEventListener('input', () => calculateRowTotal(input));
+    });
 }
 
   // Function to remove a goods entry
@@ -315,7 +326,7 @@ async function saveBill() {
         alert('Bill saved successfully!');
     } catch (error) {
         console.error('Error saving bill:', error);
-        alert('There was an error saving the bill. Please try again.');
+        alert('Failed to save the bill. Please check your network connection or try again later.');
     }
 }
 
@@ -378,11 +389,4 @@ function closeForm() {
 }
 
 // Other existing functions remain unchanged
-
-// Ensure to call addEventListener for input fields and buttons instead of using inline handlers
-document.querySelectorAll('.no-articles, .rate-per-article, .freight, .gst').forEach(input => {
-    input.addEventListener('input', function () {
-        calculateRowTotal(this);
-    });
-});
 
