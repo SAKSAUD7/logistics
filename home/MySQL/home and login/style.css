@@ -5,10 +5,11 @@
     box-sizing: border-box;
 }
 
+/* Body Styles */
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #1f1c2c, #928dab);
-    color: #e0e0e0;
+    background: linear-gradient(135deg, #d0e9d6, #a8dbbc); /* Soft light green gradient */
+    color: #333; /* Dark grey for general text */
     line-height: 1.6;
 }
 
@@ -19,64 +20,87 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    color: white;
+    background: rgba(255, 255, 255, 0.9); /* Light background with slight transparency */
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    padding: 40px;
 }
 
+/* Heading Styles */
 .login-page h2 {
     margin-bottom: 20px;
     font-size: 2rem;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    color: #2e7d32; /* Deep green for heading */
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for emphasis */
 }
 
+/* Form Container Styles */
 .login-page form {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.8); /* Lightened form background for elegance */
     padding: 30px;
-    border-radius: 15px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Constrain form width for better layout */
 }
 
+/* Input Field Styles */
 .login-page input {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: none;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    border: 2px solid #a8dbbc; /* Light green border */
+    border-radius: 5px;
+    background: #ffffff; /* White background for input fields */
+    color: #333; /* Dark grey for text */
     font-size: 1rem;
+    transition: border 0.3s ease, box-shadow 0.3s ease; /* Added transition */
 }
 
+/* Input Field Focus Styles */
 .login-page input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px #4caf50, 0 0 40px #4caf50;
+    border-color: #2e7d32; /* Darker green on focus */
+    box-shadow: 0 0 5px #a8dbbc, 0 0 15px #a8dbbc; /* Light green glow on focus */
 }
 
+/* Button Styles */
 .login-page button {
     width: 100%;
     padding: 12px;
-    background-color: #4caf50;
-    color: white;
+    background-color: #636663; /* Dark green for button background */
+    color: #fff; /* White for button text */
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 1.1rem;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Added transform */
 }
 
+/* Button Hover Styles */
 .login-page button:hover {
-    background-color: #3e8e41;
-    box-shadow: 0 0 15px #4caf50, 0 0 30px #4caf50, 0 0 45px #4caf50;
+    background-color: #848784; /* Slightly darker green on hover */
+    box-shadow: 0 0 15px #8c8f8c, 0 0 30px #2e7d32; /* Dark green shadow on hover */
+    transform: scale(1.02); /* Slightly enlarge button on hover */
 }
 
 /* Error Message Styling */
 .error-message {
     margin-top: 10px;
-    color: #ff4d4d;
-    display: none;
+    color: #d32f2f; /* Red for error messages */
+    display: none; /* Hidden by default */
 }
+
+/* Media Queries for Responsive Design */
+@media (max-width: 480px) {
+    .login-page h2 {
+        font-size: 1.5rem; /* Smaller heading on small screens */
+    }
+
+    .login-page form {
+        padding: 20px; /* Reduce padding on smaller screens */
+    }
+}
+
 
 /* Main Application Styling */
 .main-content {
@@ -86,58 +110,45 @@ body {
 
 /* Header Styling */
 header {
-    background-color: #000;
-    color: white;
+    background-color: #000; /* Black for header */
+    color: #fff; /* White text */
     padding: 10px 0;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
-.main-nav ul {
-    display: flex;
-    justify-content: space-around;
-    list-style: none;
-}
-
-.main-nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.main-nav ul li a:hover {
-    background-color: #333;
-    color: #4caf50;
-    box-shadow: 0 0 10px #4caf50, 0 0 20px #4caf50;
-}
-
-/* Secondary Navigation Bar */
+/* Navigation Styling */
+.main-nav ul,
 .secondary-nav ul {
     display: flex;
     justify-content: space-around;
     list-style: none;
-    background: rgba(52, 73, 94, 0.7); /* Semi-transparent */
-    backdrop-filter: blur(10px); /* Adds glass effect */
+    margin: 0;
     padding: 10px;
-    margin-top: 10px;
-    border-radius: 10px; /* Smooth round corners */
 }
 
+.main-nav ul li a,
 .secondary-nav ul li a {
-    color: #ecf0f1; /* Light text color */
+    color: #e0e0e0; /* Light grey */
     text-decoration: none;
-    padding: 10px;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth hover effect */
+    padding: 10px 20px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 5px; /* Added rounded corners */
 }
 
+.main-nav ul li a:hover,
 .secondary-nav ul li a:hover {
-    background-color: rgba(44, 62, 80, 0.5); /* Slight glow effect */
-    color: #00ff99; /* Neon glow color */
-    border-radius: 5px;
+    background-color: #333;
+    color: #4caf50; /* Green on hover */
+    box-shadow: 0 0 10px #4caf50, 0 0 20px #4caf50;
 }
 
-
-
+/* Secondary Navigation Bar */
+.secondary-nav {
+    background: rgba(52, 73, 94, 0.7);
+    backdrop-filter: blur(10px);
+    margin-top: 10px;
+    border-radius: 10px;
+}
 
 /* Home Page Section */
 #home {
@@ -150,21 +161,28 @@ header {
     color: white;
     text-align: center;
     box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+    padding: 20px;
 }
 
+/* Hero Heading */
 #home h1 {
     font-size: 3.5em;
     margin-bottom: 20px;
-    text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    text-shadow: 0 0 15px rgba(0, 255, 0, 0.7); /* Green glow */
+    animation: fadeIn 1s ease;
 }
 
+/* Hero Subheading */
 #home p {
     font-size: 1.5em;
     margin-bottom: 40px;
     width: 70%;
     max-width: 800px;
+    line-height: 1.5;
+    animation: fadeIn 1.2s ease;
 }
 
+/* Primary Button */
 #home .btn-primary {
     padding: 15px 30px;
     background-color: #4caf50;
@@ -172,7 +190,9 @@ header {
     border: none;
     border-radius: 10px;
     font-size: 1.3em;
+    cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s;
+    text-decoration: none;
 }
 
 #home .btn-primary:hover {
@@ -180,6 +200,33 @@ header {
     transform: scale(1.05);
 }
 
+/* Animation for Fade-In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    #home h1 {
+        font-size: 2.5em;
+    }
+
+    #home p {
+        font-size: 1.2em;
+        width: 90%;
+    }
+
+    #home .btn-primary {
+        font-size: 1.1em;
+    }
+}
 
 /* Secondary Section Wrapper */
 .secondary-section {
@@ -215,7 +262,6 @@ header {
     padding: 20px;
     border-radius: 15px;
     width: 100%;
-    box-shadow: none; /* Cards will now handle shadows */
 }
 
 #calc-display {
@@ -226,7 +272,7 @@ header {
     border: 1px solid #333;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.5);
-    color: #4caf50;
+    color: #4caf50; /* Green for display text */
     text-align: right;
 }
 
@@ -239,8 +285,8 @@ header {
 .calc-buttons button {
     padding: 15px;
     font-size: 18px;
-    background-color: #444;
-    color: #ddd;
+    background-color: #444; /* Darker button background */
+    color: #ddd; /* Light grey text */
     border: none;
     border-radius: 8px;
     transition: background-color 0.2s ease, transform 0.2s;
@@ -251,135 +297,6 @@ header {
     transform: scale(1.05);
 }
 
-.equal-btn {
-    grid-column: span 4;
-    background-color: #4caf50;
-}
-
-.equal-btn:hover {
-    background-color: #3e8e41;
-}
-
-/* Notepad Styling */
-.notepad {
-    width: 100%;
-}
-
-#notepad-content {
-    width: 100%;
-    height: 150px;
-    padding: 12px;
-    font-size: 16px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid #333;
-    border-radius: 10px;
-    color: white;
-}
-
-.notepad-buttons {
-    margin-top: 10px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.notepad-buttons button {
-    padding: 10px 15px;
-    font-size: 16px;
-    margin-left: 10px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s;
-}
-
-.notepad-buttons button:hover {
-    background-color: #3e8e41;
-    transform: scale(1.05);
-}
-
-/* Billing Software Styling */
-.billing-software {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.billing-sub-tabs {
-    margin-bottom: 20px;
-}
-
-.billing-sub-tabs ul {
-    display: flex;
-    justify-content: space-around;
-    list-style: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.billing-sub-tabs ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.billing-sub-tabs ul li a:hover {
-    background-color: #4caf50;
-    color: white;
-    border-radius: 5px;
-}
-
-/* Billing Form Styling */
-.billing-form {
-    width: 100%;
-    max-width: 500px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-}
-
-.billing-form label {
-    display: block;
-    margin-bottom: 5px;
-    color: white;
-}
-
-.billing-form input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-.billing-form input:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 10px #4caf50;
-}
-
-.billing-form button {
-    width: 100%;
-    padding: 12px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, transform 0.2s;
-}
-
-.billing-form button:hover {
-    background-color: #3e8e41;
-    transform: scale(1.05);
-}
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
@@ -398,11 +315,72 @@ header {
 }
 
 
+/* Billing Sub-Tabs Styling */
+.billing-sub-tabs {
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Unordered list styling */
+.billing-sub-tabs ul {
+    list-style: none; /* Remove bullet points */
+    display: flex; /* Horizontal alignment */
+    justify-content: space-around; /* Even spacing */
+    padding: 10px;
+    margin: 0; /* Remove default margin */
+}
+
+/* List item styling */
+.billing-sub-tabs ul li {
+    flex: 1; /* Each tab takes equal space */
+}
+
+/* Link styling */
+.billing-sub-tabs ul li a {
+    display: block; /* Makes the entire area clickable */
+    padding: 15px;
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    color: #e0e0e0; /* Light grey text */
+    background-color: rgba(0, 0, 0, 0.5); /* Dark background */
+    border-radius: 10px; /* Rounded corners */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+/* Active Tab Styling */
+.billing-sub-tabs ul li a.active {
+    background-color: #4caf50; /* Highlight active tab */
+    color: #fff; /* White text on active */
+    box-shadow: 0 4px 10px rgba(0, 255, 0, 0.5); /* Green glow */
+}
+
+/* Hover Effect */
+.billing-sub-tabs ul li a:hover {
+    background-color: #333; /* Darker background on hover */
+    color: #4caf50; /* Change text color on hover */
+}
+
+
+
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #e0e7ff, #f4f7f9);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
 
 /* Vehicle Records Styling */
 #vehicle-records {
+    display: none;
     padding: 20px;
     margin-top: 50px;
+    background: rgba(255, 255, 255, 0.9); /* Blending with the background */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 #vehicle-table {
@@ -416,13 +394,13 @@ header {
     border: 1px solid #333;
     padding: 10px;
     text-align: left;
-    background-color: #222;
-    color: #ddd;
-    transition: background-color 0.3s;
+    background-color: #ffffff; /* Matching with general styles */
+    color: #333; /* Dark text for contrast */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 #vehicle-table th {
-    background-color: #4caf50;
+    background-color: #003366; /* Consistent with general styles */
     color: white;
     font-weight: bold;
 }
@@ -436,11 +414,116 @@ header {
 }
 
 #vehicle-table tbody tr:nth-child(even) {
-    background-color: #333;
+    background-color: rgba(0, 51, 102, 0.05); /* Light background for even rows */
 }
 
 #vehicle-table tbody tr:hover {
-    background-color: #444;
+    background-color: rgba(0, 51, 102, 0.1); /* Hover effect */
+    color: #333; /* Ensuring readability on hover */
+}
+
+/* Reports Container */
+.reports-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 40px;
+    transition: all 0.3s ease;
+}
+
+.reports-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Heading Styles */
+h2, h3, h4 {
+    color: #003366;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    width: 100%;
+}
+
+/* Search Bar */
+.search-bar {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.search-bar input {
+    width: 350px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: #003366;
+    box-shadow: 0 0 10px rgba(0, 51, 102, 0.2);
+    outline: none;
+}
+
+/* Button Styles */
+button {
+    background: linear-gradient(135deg, #003366, #00509e);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #004080, #0060bf);
+    transform: translateY(-3px);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* Total Styles */
+.total {
+    font-weight: bold;
+    text-align: right;
+    margin-top: 30px;
+    font-size: 18px;
+    color: #00509e;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+    .reports-container {
+        padding: 20px;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    #vehicle-records {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+}
+
+@media (max-width: 600px) {
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    th, td {
+        padding: 8px;
+        font-size: 12px;
+    }
 }
 
 /* Calculator Styles */
@@ -515,3 +598,72 @@ header {
     }
 }
 
+
+
+
+
+/* Notepad Section Styles */
+#notepad {
+    background: rgba(255, 255, 255, 0.9); /* Light background for contrast */
+    border-radius: 10px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 20px; /* Padding for inner spacing */
+    max-width: 600px; /* Max width to constrain the notepad */
+    margin: 20px auto; /* Centering the notepad section */
+}
+
+/* Textarea Styles */
+#notepad-content {
+    width: 100%; /* Full width of the notepad */
+    height: 200px; /* Fixed height for textarea */
+    padding: 15px; /* Inner spacing for comfort */
+    border: 2px solid #a8dbbc; /* Light green border */
+    border-radius: 5px; /* Slightly rounded corners */
+    font-size: 1rem; /* Font size for readability */
+    font-family: 'Roboto', sans-serif; /* Consistent font style */
+    background: #f9f9f9; /* Light background for textarea */
+    color: #333; /* Dark text color */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus effects */
+}
+
+/* Textarea Focus Styles */
+#notepad-content:focus {
+    outline: none; /* Remove default outline */
+    border-color: #2e7d32; /* Dark green border on focus */
+    box-shadow: 0 0 5px #a8dbbc; /* Light green shadow on focus */
+}
+
+/* Button Styles */
+#notepad button {
+    padding: 10px 15px; /* Inner spacing for buttons */
+    margin: 10px 5px; /* Spacing between buttons */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #4caf50; /* Green background for buttons */
+    color: #fff; /* White text color */
+    font-size: 1rem; /* Font size for buttons */
+    cursor: pointer; /* Pointer cursor for hover effect */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+/* Button Hover Styles */
+#notepad button:hover {
+    background-color: #388e3c; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 480px) {
+    #notepad {
+        padding: 15px; /* Reduce padding on smaller screens */
+    }
+
+    #notepad-content {
+        height: 150px; /* Smaller height for textarea on mobile */
+    }
+
+    #notepad button {
+        width: 100%; /* Full width buttons on small screens */
+        margin: 5px 0; /* Stack buttons vertically */
+    }
+}

@@ -1,3 +1,32 @@
+// Function to generate a new LR number and update the form field
+function generateLRNo() {
+    // Get the last LR number from local storage or set to '0000' if not present
+    let lastLRNo = localStorage.getItem('lastLRNo') || '0000';
+
+    // Increment the LR number by 1 and pad with zeros up to 4 digits
+    let newLRNo = (parseInt(lastLRNo) + 1).toString().padStart(4, '0');
+
+    // Update the input field with the new LR number
+    document.getElementById('lr-no').value = newLRNo;
+
+    // Store the new LR number in local storage for future use
+    localStorage.setItem('lastLRNo', newLRNo);
+}
+
+// Call the function to generate a new LR number when the page loads
+window.onload = function() {
+    generateLRNo();
+
+        // Other onload logic for populating dropdowns and goods
+        const goodsSelects = document.querySelectorAll('.goods');
+        goodsSelects.forEach(select => {
+            populateGoodsDropdown(select);
+        });
+    };
+
+
+
+
 // Function to calculate GST and total amount
 function calculateTotal() {
     // Get the values from the input fields
@@ -30,8 +59,8 @@ function calculateRowTotal(input) {
 
     // Validate input values and reset the row if invalid
     if (!noOfArticles || !ratePerArticle || noOfArticles < 0 || ratePerArticle < 0) {
-        row.querySelector('.gst-amt').value = '0.00';
-        row.querySelector('.total').value = '0.00';
+        row.querySelector('.gst-amt').value = '';
+        row.querySelector('.total').value = '';
         return;
     }
 
@@ -61,7 +90,7 @@ function calculateGrandTotal() {
         grandTotal += parseFloat(element.value) || 0;
     });
 
-    document.getElementById('total-amount').value = grandTotal.toFixed(2);
+    document.getElementById('total-amount').value = Total.toFixed(2);
 }
 
 // Attach event listeners for other inputs to calculate totals
@@ -108,6 +137,8 @@ function generateBill() {
     document.getElementById("preview-consignor-address").innerText = document.getElementById("consigner-address").value;
     document.getElementById("preview-date").innerText = document.getElementById("date").value;
     document.getElementById("preview-lr-no").innerText = document.getElementById("lr-no").value;
+    document.getElementById("preview-Consignor-Invoice-no").innerText = document.getElementById("Consignor-Invoice-no").value;
+    document.getElementById("preview-Consignee-Invoice-no").innerText = document.getElementById("Consignee-Invoice-no").value;
 
     // Update total amounts
     const goodsEntries = document.querySelectorAll('#goods-entries tr');
@@ -146,6 +177,14 @@ function generateBill() {
     document.getElementById("preview-total").innerText = grandTotal.toFixed(2);
 
     document.getElementById("bill-preview").style.display = 'block'; // Show the bill preview
+
+    const isSaved = saveBill();
+
+    if (!isSaved) {
+        alert("Retry: Bill not saved!");
+    } else {
+        alert("Bill generated and saved successfully!");
+    }
 }
 
 
@@ -303,32 +342,151 @@ function printBill() {
     newWindow.print();
 }
 
-
-async function saveBill() {
-    const billData = {
-        lr_no: document.getElementById('lr_no').value,
-        manual_bill_no: document.getElementById('manual_bill_no').value,
-        // Add other fields as necessary
-    };
-
+function saveBill() {
+    console.log("Save Bill function called"); // Debugging line
     try {
-        // Make an API call to save the bill
-        const response = await fetch('/api/save-bill', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(billData),
+        // Get form values
+        const lrNo = document.getElementById('lr-no').value;
+        const date = document.getElementById('date').value;
+        const gstPaidBy = document.getElementById('gst-paid-by').value;
+        const paymentMode = document.getElementById('payment-mode').value;
+        const from = document.getElementById('from').value;
+        const to = document.getElementById('to').value;
+        const consignor = document.getElementById('consigner').value;
+        const consignorAddress = document.getElementById('consigner-address').value;
+        const consignorInvoiceNo = document.getElementById('Consignor-Invoice-no').value;
+        const consignee = document.getElementById('consignee').value;
+        const consigneeAddress = document.getElementById('consignee-address').value;
+        const consigneeInvoiceNo = document.getElementById('Consignee-Invoice-no').value;
+
+
+        
+        // Get goods info
+        const goodsEntries = [];
+        const rows = document.querySelectorAll("#goods-entries tr");
+        rows.forEach((row) => {
+            const goods = row.querySelector(".goods").value;
+            const noOfArticles = row.querySelector(".no-articles").value;
+            const ratePerArticle = row.querySelector(".rate-per-article").value;
+            const gst = row.querySelector(".gst").value;
+            const gstAmt = row.querySelector(".gst-amt").value;
+            const freight = row.querySelector(".freight").value;
+            const total = row.querySelector(".total").value;
+
+            goodsEntries.push({
+                goods,
+                noOfArticles,
+                ratePerArticle,
+                gst,
+                gstAmt,
+                freight,
+                total: parseFloat(total) || 0  // Ensure total is a number
+            });
         });
-        if (!response.ok) {
-            throw new Error('Failed to save the bill');
+
+          // Calculate total amount from goods entries
+          const totalAmount = goodsEntries.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0);
+
+        // Create bill object
+        const bill = {
+            lrNo,
+            date,
+            gstPaidBy,
+            paymentMode,
+            from,
+            to,
+            consignor,
+            consignorAddress,  // Added consignor address
+            consignorInvoiceNo, // Added consignor invoice number
+            consignee,
+            consigneeAddress,  // Added consignee address
+            consigneeInvoiceNo, // Added consignee invoice number
+            total: totalAmount, // Save the total amount here
+            goodsEntries // Save the goods entries in the bill
+        };
+
+
+           // Retrieve saved bills from localStorage
+           const bills = JSON.parse(localStorage.getItem('bills')) || [];
+
+           // Check if editing an existing bill
+           const editIndex = localStorage.getItem("editBillIndex");
+           if (editIndex !== null) {
+               // Convert editIndex to a number (localStorage stores everything as strings)
+               const index = parseInt(editIndex, 10);
+   
+               // Update the existing bill at the given index
+               bills[index] = bill;
+               alert("Bill updated successfully!");
+   
+              // Save the updated bills array back to localStorage
+            localStorage.setItem('bills', JSON.stringify(bills));
+
+            // Now remove the editBillIndex after updating the bill
+            localStorage.removeItem("editBillIndex");
+           } else {
+               // No edit index, it's a new bill, so push it to the array
+               bills.push(bill);
+               alert("Bill saved successfully!");
+           }
+   
+           // Save the updated bills array back to localStorage
+           localStorage.setItem('bills', JSON.stringify(bills));
+   
+           console.log("Bills saved to localStorage:", bills); // Debugging line
+   
+           // Optionally load reports right after saving (if you're still on the same page)
+           loadReports();
+       } catch (error) {
+           alert("Error saving bill: " + error.message);
+       }
+   }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const editBillIndex = localStorage.getItem("editBillIndex");
+
+    if (editBillIndex !== null) {
+        const bills = JSON.parse(localStorage.getItem("bills")) || [];
+        const bill = bills[editBillIndex];
+
+        if (bill) {
+            // Populate the form with the bill details
+            document.getElementById('lr-no').value = bill.lrNo;
+            document.getElementById('date').value = bill.date;
+            document.getElementById('gst-paid-by').value = bill.gstPaidBy;
+            document.getElementById('payment-mode').value = bill.paymentMode;
+            document.getElementById('from').value = bill.from;
+            document.getElementById('to').value = bill.to;
+            document.getElementById('consigner').value = bill.consignor;
+            document.getElementById('consigner-address').value = bill.consignorAddress;
+            document.getElementById('Consignor-Invoice-no').value = bill.consignorInvoiceNo;
+            document.getElementById('consignee').value = bill.consignee;
+            document.getElementById('consignee-address').value = bill.consigneeAddress;
+            document.getElementById('Consignee-Invoice-no').value = bill.consigneeInvoiceNo;
+
+            // Populate goods entries (assuming dynamic rows in your table)
+            const goodsEntries = bill.goodsEntries;
+            const goodsTable = document.getElementById('goods-entries');
+            goodsTable.innerHTML = ''; // Clear existing rows if any
+
+            goodsEntries.forEach((entry) => {
+                const row = goodsTable.insertRow();
+                row.innerHTML = `
+                    <td><input type="text" class="goods" value="${entry.goods}"></td>
+                    <td><input type="number" class="no-articles" value="${entry.noOfArticles}"></td>
+                    <td><input type="number" class="rate-per-article" value="${entry.ratePerArticle}"></td>
+                    <td><input type="number" class="gst" value="${entry.gst}"></td>
+                    <td><input type="number" class="gst-amt" value="${entry.gstAmt}"></td>
+                    <td><input type="number" class="freight" value="${entry.freight}"></td>
+                    <td><input type="number" class="total" value="${entry.total}"></td>
+                `;
+            });
         }
-        alert('Bill saved successfully!');
-    } catch (error) {
-        console.error('Error saving bill:', error);
-        alert('Failed to save the bill. Please check your network connection or try again later.');
+
+      
     }
-}
+});
 
 
 
@@ -337,46 +495,16 @@ async function saveBill() {
 function modifyBill() {
     alert("Modify Bill functionality not implemented yet.");
     // Implement modify logic
-
-    async function fetchReportData() {
-        try {
-            const response = await fetch('http://localhost:3000/api/bills');
-            const bills = await response.json();
-    
-            // Get the reports section and clear previous content
-            const reportsSection = document.getElementById("reports-section");
-            reportsSection.innerHTML = "";
-    
-            // Iterate through each bill and create HTML elements to display the data
-            bills.forEach((bill, index) => {
-                const billRow = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${bill.lrNo}</td>
-                        <td>${bill.billNo}</td>
-                        <td>${bill.customerName}</td>
-                        <td>${bill.totalAmount}</td>
-                        <td>${bill.date}</td>
-                        <td>${bill.time}</td>
-                    </tr>
-                `;
-                reportsSection.innerHTML += billRow;
-            });
-        } catch (error) {
-            console.error("Error fetching report data:", error);
-        }
-    }
-    
-    // Call the fetchReportData function on page load or after saving a bill
-    fetchReportData();
-
-
 }
 
-// Function to delete the bill (simulation)
-function deleteBill() {
-    alert("Delete Bill functionality not implemented yet.");
-    // Implement delete logic
+
+
+// Function to delete a bill
+function deleteBill(index) {
+    const bills = JSON.parse(localStorage.getItem("bills")) || [];
+    bills.splice(index, 1);
+    localStorage.setItem("bills", JSON.stringify(bills));
+    loadReports(); // Refresh the report table after deletion
 }
 
 
@@ -388,5 +516,4 @@ function closeForm() {
     document.getElementById("bill-preview").style.display = 'none'; // Hide the bill preview
 }
 
-// Other existing functions remain unchanged
 
