@@ -148,3 +148,38 @@ function deleteBill(index) {
     localStorage.setItem("bills", JSON.stringify(bills));
     loadReports(); // Refresh the report table after deletion
 }
+
+
+function exportToExcel() {
+    // Get the table element
+    var table = document.getElementById("reports-table");
+    var rows = table.rows;
+    var csvContent = "data:text/csv;charset=utf-8,";
+
+    // Loop through the rows and create CSV content
+    for (var i = 0; i < rows.length; i++) {
+        var cols = rows[i].querySelectorAll("td, th");
+        var rowData = Array.from(cols).map(col => col.innerText).join(",");
+        csvContent += rowData + "\r\n"; // Add line breaks
+    }
+
+    // Create a link and trigger a download
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "billing_reports.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function printTable() {
+    var printContents = document.getElementById("reports-table").outerHTML;
+    var win = window.open('', '', 'height=500,width=800');
+    win.document.write('<html><head><title>Print Table</title>');
+    win.document.write('</head><body>');
+    win.document.write(printContents);
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+}

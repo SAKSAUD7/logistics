@@ -45,8 +45,8 @@ function calculateTotal() {
     const totalAmount = subtotal + gstAmount + freight; // Total Calculation
 
     // Set values to the respective input fields
-    document.getElementById("gst-amt").value = gstAmount.toFixed(2); // Show GST amount
-    document.getElementById("total").value = totalAmount.toFixed(2); // Show total amount
+    document.getElementById("preview-gst-amt").value = gstAmount.toFixed(2); // Show GST amount
+    document.getElementById("preview-total").value = totalAmount.toFixed(2); // Show total amount
 }
 
 
@@ -87,10 +87,12 @@ function calculateGrandTotal() {
     let grandTotal = 0;
 
     totalElements.forEach(element => {
-        grandTotal += parseFloat(element.value) || 0;
+        grandTotal += parseFloat(element.querySelector('.total').value) || 0; // Ensure we sum the total from the correct element
     });
 
-    document.getElementById('total-amount').value = Total.toFixed(2);
+  // Update the preview total for grand total
+  document.getElementById('total-amount').value = grandTotal.toFixed(2);
+  document.getElementById("preview-total").innerText = grandTotal.toFixed(2); // Update displayed grand total
 }
 
 // Attach event listeners for other inputs to calculate totals
