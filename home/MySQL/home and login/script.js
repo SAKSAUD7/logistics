@@ -19,30 +19,98 @@ function login() {
         errorMessage.style.display = 'block'; // Show the error message
     }
 }
-
 // Function to display main section
 function showSection(sectionId) {
     const sections = document.querySelectorAll('.content-section');
     sections.forEach(section => {
         section.style.display = 'none'; // Hide all sections
     });
-    document.getElementById(sectionId).style.display = 'block'; // Show selected section
+
+    // Show the clicked section
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) {
+        activeSection.style.display = 'block';
+    }
+
+    // Show sub-tabs for billing section
+    if (sectionId === 'billing') {
+        document.getElementById('billing-sub-tabs').style.display = 'flex';
+    } else {
+        document.getElementById('billing-sub-tabs').style.display = 'none';
+    }
+
+    // Load reports in iframe if reports section is active
+    if (sectionId === 'reports') {
+        const reportsIframe = document.getElementById('reports-content');
+        reportsIframe.src = 'home/bill/report.html'; // Adjust path if needed
+        console.log('Loading reports from:', reportsIframe.src); // Debugging log
+    }
 }
+
+function initialize() {
+    // Check if there's a hash in the URL
+    const currentSection = window.location.hash.replace('#', '') || 'home';
+    
+    // If there's no hash, default to 'home'
+    if (!window.location.hash) {
+        window.location.hash = 'home';
+    }
+    
+    // Show the section
+    showSection(currentSection);
+}
+
+
+// Call initialize when the window loads
+window.onload = initialize;
+
 
 // Function to display billing sub-section
 function showBillingSection(sectionId) {
+    console.log("Requested Section:", sectionId); // Ensure the correct section is being passed
+
     const billingSections = document.querySelectorAll('.billing-section');
     billingSections.forEach(section => {
         section.style.display = 'none'; // Hide all billing sections
     });
-    document.getElementById(sectionId).style.display = 'block'; // Show selected billing section
+
+    // Check if the sectionId exists in the DOM
+    const selectedSection = document.getElementById(sectionId);
+    if (selectedSection) {
+        selectedSection.style.display = 'block'; // Show selected billing section
+    } else {
+        console.error("Section ID not found:", sectionId);
+    }
+
+    const billingContent = document.getElementById('billing-content');
+
+    // Convert sectionId to lowercase for consistency
+    const lowerSectionId = sectionId.toLowerCase();
+
+    if (lowerSectionId === 'bill') {
+        billingContent.innerHTML = '<iframe src="home/bill/index1.html" style="width: 100%; height: 100vh; border: none;"></iframe>';
+    } else if (lowerSectionId === 'receipts') {
+        billingContent.innerHTML = '<iframe src="home/bill/Recipt.html" style="width: 100%; height: 100vh; border: none;"></iframe>';
+    } else if (lowerSectionId === 'expenses') {
+        billingContent.innerHTML = '<iframe src="home/bill/Expenses.html" style="width: 100%; height: 100vh; border: none;"></iframe>';
+        console.log('Loading expenses'); // Confirm expenses loading
+    } else {
+        billingContent.innerHTML = '<p>' + sectionId + ' content will go here.</p>';
+    }
 }
 
 // Set default section on load
 window.onload = function() {
     showSection('vehicle-records'); // Default to vehicle records
     showBillingSection('bill'); // Default to billing tab
+    const savedNote = localStorage.getItem('savedNote');
+    if (savedNote) {
+        notepadContent.value = savedNote;
+    }
+    fetchBills(); // Load bills on page load
 };
+
+
 
 // Vehicle Records Functions
 document.addEventListener("DOMContentLoaded", loadVehicleRecords);
@@ -59,6 +127,7 @@ function addVehicleRow() {
         <td><input type="text" placeholder="Driver License" class="driver-license"></td>
         <td><input type="date" class="vehicle-fc"></td>
         <td><input type="date" class="insurance-expiry"></td>
+           <td><input type="date" class="permit-expiry"></td>
         <td>
             <button onclick="saveRecord(this)">Save</button>
             <button onclick="deleteRecord(this)">Delete</button>
@@ -77,8 +146,9 @@ function saveRecord(button) {
     const driverLicense = row.querySelector('.driver-license').value;
     const vehicleFC = row.querySelector('.vehicle-fc').value;
     const insuranceExpiry = row.querySelector('.insurance-expiry').value;
+    const permitExpiry = row.querySelector('.permit-expiry').value;
 
-    if (vehicleName && ownerName && driverName && driverLicense && vehicleFC && insuranceExpiry) {
+    if (vehicleName && ownerName && driverName && driverLicense && vehicleFC && insuranceExpiry && permitExpiry) {
         let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
 
         const reader = new FileReader();
@@ -92,7 +162,8 @@ function saveRecord(button) {
                 driver: driverName,
                 license: driverLicense,
                 fc: vehicleFC,
-                expiry: insuranceExpiry
+                expiry: insuranceExpiry,
+                permit: permitExpiry
             };
 
             vehicleRecords.push(newRecord);
@@ -133,6 +204,7 @@ function loadVehicleRecords() {
             <td>${record.license}</td>
             <td>${record.fc}</td>
             <td>${record.expiry}</td>
+             <td>${record.permit}</td>
             <td>
                 <button onclick="editRecord(${index})">Edit</button>
                 <button onclick="deleteRecord(${index})">Delete</button>
@@ -175,6 +247,7 @@ function editRecord(index) {
         <td><input type="text" value="${record.license}" class="driver-license"></td>
         <td><input type="date" value="${record.fc}" class="vehicle-fc"></td>
         <td><input type="date" value="${record.expiry}" class="insurance-expiry"></td>
+           <td><input type="date" value="${record.permit}" class="permit-expiry"></td>
         <td>
             <button onclick="updateRecord(${index})">Update</button>
             <button onclick="cancelEdit()">Cancel</button>
@@ -191,6 +264,8 @@ function updateRecord(index) {
     const driverLicense = row.querySelector('.driver-license').value;
     const vehicleFC = row.querySelector('.vehicle-fc').value;
     const insuranceExpiry = row.querySelector('.insurance-expiry').value;
+    const permitExpiry = row.querySelector('.permit-expiry').value;
+
 
     let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
 
@@ -205,7 +280,8 @@ function updateRecord(index) {
             driver: driverName,
             license: driverLicense,
             fc: vehicleFC,
-            expiry: insuranceExpiry
+            expiry: insuranceExpiry,
+            permit: permitExpiry
         };
 
         localStorage.setItem('vehicleRecords', JSON.stringify(vehicleRecords));
@@ -238,35 +314,59 @@ function checkInsuranceExpiry(expiryDate) {
 
     if (expiry < today) {
         alert('Vehicle insurance has expired!');
-        sendSMS("Insurance expired for vehicle!");
+        sendSMS(`Insurance expired for vehicle: ${vehicleName}!`, '+919481155714');  // Send alert to a specific number
     } else if (expiry - today < 30 * 24 * 60 * 60 * 1000) {  // Less than a month left
         alert('Vehicle insurance will expire soon!');
-        sendSMS("Vehicle insurance is expiring soon!");
+        sendSMS(`Vehicle insurance is expiring soon for: ${vehicleName}!`, '+919481155714');  // Send alert 
     }
 }
 
+// Use environment variables for sensitive information
+require('dotenv').config();
+// Function to send SMS using Twilio API
 function sendSMS(message) {
-    const phoneNumber = '9481155714';
-    
-    // Here you'll need to integrate an SMS API like Twilio
-    //  (use Twilio's REST API):
-    /*
-    fetch('https://api.twilio.com/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXX/Messages.json', {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;  // Ensure this is set correctly
+    const authToken = process.env.TWILIO_AUTH_TOKEN;    // Ensure this is set correctly
+    const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;  // Twilio Number from environment
+    const recipientNumber = '+919481155714';  // Make sure the recipient number is in E.164 format
+
+    // Check if environment variables are correctly loaded
+    if (!accountSid || !authToken || !twilioPhoneNumber) {
+        console.error("Twilio credentials are not set properly.");
+        return;
+    }
+
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+
+    fetch(url, {
         method: 'POST',
         body: new URLSearchParams({
-            'To': phoneNumber,
-            'From': 'YOUR_TWILIO_PHONE_NUMBER',
+            'To': recipientNumber,
+            'From': twilioPhoneNumber,  // From Twilio number (environment variable)
             'Body': message
         }),
         headers: {
-            'Authorization': 'Basic ' + btoa('ACXXXXXXXXXXXXXXXXX:your_auth_token')
+            'Authorization': 'Basic ' + btoa(`${accountSid}:${authToken}`),
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
-    }).then(response => response.json()).then(data => console.log(data));
-    */
-    
-    console.log(`SMS to ${phoneNumber}: ${message}`);
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error(`Error sending SMS: ${response.statusText}`);
+            return response.json().then(errorData => console.error(errorData));
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(`SMS sent successfully! SID: ${data.sid}`);
+    })
+    .catch(error => {
+        console.error('Error sending SMS:', error);
+    });
 }
 
+// Example usage
+sendSMS('Vehicle insurance is expiring soon!');
 
 
 
@@ -311,3 +411,4 @@ window.onload = function() {
         notepadContent.value = savedNote;
     }
 };
+
