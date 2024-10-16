@@ -1,7 +1,5 @@
 {
-<<<<<<< HEAD
-    "liveServer.settings.port": 5501
-=======
+    "liveServer.settings.port": 4000,
     "cSpell.words": [
         "consigner",
         "tabcontent",
@@ -9,5 +7,4 @@
         "tablink",
         "tablinks"
     ]
->>>>>>> 0dd0436ada3b7247a886af1370abac724f1afe6b
 }
