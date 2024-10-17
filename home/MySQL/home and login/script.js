@@ -357,7 +357,7 @@ function checkInsuranceExpiry(expiryDate) {
 
 
 
-// Calculator Functions
+//Functions Calculator 
 let calcDisplay = document.getElementById('calc-display');
 
 function appendValue(value) {
