@@ -1,159 +1,145 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logistics Billing Software</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Logistics Billing Software - Login</title>
+    <style>
+        /* General Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            background: none;
+        }
+
+        /* Background Image Container */
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('IMG.png') no-repeat center center/cover;
+            filter: blur(5px); /* Blur only the background */
+            z-index: -1;
+        }
+
+        /* Login Box Styling */
+        #login-page {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 40px;
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        /* Heading Style */
+        #login-page h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+        }
+
+        /* Input Field Styling */
+        #login-page input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Button Styling */
+        #login-page button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        #login-page button:hover {
+            background: #0056b3;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: red;
+            display: none;
+        }
+
+        /* Smooth Animations */
+        #login-page {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #login-page {
+                padding: 30px;
+                max-width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header with Main Tabs and Logo -->
-    <header>
-        <div class="header-container">
-            <!-- Logo -->
-            <div class="logo">
-                <img src="LOGO.png" alt="Company Logo" style="height: 80px;">
-            </div>
-            <!-- Navigation -->
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#" onclick="showSection('home')">Home</a></li>
-                    <li><a href="#" onclick="showSection('vehicle-records')">Vehicle Records</a></li>
-                    <li><a href="#" onclick="showSection('transactions')">Transactions</a></li>
-                    <li><a href="#" onclick="showSection('services')">Services</a></li>
-                    <li><a href="#" onclick="showSection('reports')">Reports</a></li>
-                    <li><a href="#" onclick="showSection('money-reports')">Money Reports</a></li>
-                    <li><a href="#" onclick="showSection('security')">Security</a></li>
-                    <li><a href="#" onclick="showSection('help')">Help</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <!-- Background Image -->
+    <div class="background-image"></div>
 
-<!-- Secondary Navigation Bar -->
-<nav class="secondary-nav">
-    <ul>
-        <li><a href="#" onclick="showSection('calculator')">Calculator</a></li>
-        <li><a href="#" onclick="showSection('notepad')">Notepad</a></li>
-        <li><a href="#" onclick="showSection('billing')">Billing Software</a></li>
-    </ul>
-</nav>
-<!-- Billing Section in the Main Content -->
-<div id="billing" class="content-section" style="display: none;">
-    <div id="billing-content">
-        <!-- The content (like index1.html) will be loaded here -->
-    </div>
-</div>
+    <!-- Login Page -->
+    <section id="login-page">
+        <h2>MBS Logistics Software</h2>
+        <form id="login-form" onsubmit="event.preventDefault(); login();">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
 
-<!-- Billing Sub-Tabs -->
-<div class="billing-sub-tabs" id="billing-sub-tabs" style="display: none;">
-    <ul>
-        <li><a href="#" onclick="showBillingSection('bill')">Bill</a></li>
-        <li><a href="#" onclick="showBillingSection('receipts')">Receipts</a></li>
-        <li><a href="#" onclick="showBillingSection('expense')">Expense</a></li>
-    </ul>
-</div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
 
-    <!-- Main Content Area -->
-    <main>
-        <!-- Home Section -->
-        <section id="home" class="content-section">
-            <div class="hero" style="text-align: center;">
-                <h1>Welcome to MBS Logistics</h1>
-                <p>Streamline your logistics operations with our 
-                    advanced billing and management software.</p>
-                <div class="IMG">
-                    <img src="IMG.png" alt="Company Logo" style="height: 300px;">
-                </div>
-                <a href="#" class="cta-button" onclick="showSection('vehicle-records')">Get Started</a>
-            </div>
-        </section>
+            <button type="submit">Login</button>
+            <p id="login-error" class="error-message">Invalid username or password</p>
+        </form>
+    </section>
 
-        <!-- Vehicle Records Section -->
-        <section id="vehicle-records" class="content-section">
-            <h2>Vehicle Records</h2>
-            <div id="vehicle-container">
-                <table id="vehicle-table">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Vehicle Name</th>
-                            <th>Owner Name</th>
-                            <th>Driver Name</th>
-                            <th>Driver License</th>
-                            <th>Vehicle FC</th>
-                            <th>Insurance Expiry Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="vehicle-body">
-                        <!-- Rows will be dynamically added here -->
-                    </tbody>
-                </table>
-                <button onclick="addVehicleRow()">Add Vehicle</button>
-            </div>
-        </section>
+    <script>
+      function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
+    const validUsername = 'admin';
+    const validPassword = 'password';
 
-        <section id="reports" class="content-section">Reports Content</section>
+    if (username === validUsername && password === validPassword) {
+        // Correct relative path to Home.html
+        window.location.href = 'MySQL/home%20and%20login/Home.html'; 
+    } else {
+        const errorMessage = document.getElementById('login-error');
+        errorMessage.style.display = 'block';
+    }
+}
 
-        <!-- Other Sections -->
-        <section id="transactions" class="content-section">Transactions Content</section>
-        <section id="services" class="content-section">Services Content</section>
-        <section id="money-reports" class="content-section">Money Reports Content</section>
-        <section id="security" class="content-section">Security Content</section>
-        <section id="help" class="content-section">Help Content</section>
-        <section id="calculator" class="content-section">Calculator Content</section>
-        
-        <!-- Calculator Section -->
-        <section id="calculator" class="content-section">
-            <div class="calculator">
-                <input type="text" id="calc-display" disabled>
-                <div class="calc-buttons">
-                    <button onclick="appendValue('7')">7</button>
-                    <button onclick="appendValue('8')">8</button>
-                    <button onclick="appendValue('9')">9</button>
-                    <button onclick="appendValue('/')">/</button>
-
-                    <button onclick="appendValue('4')">4</button>
-                    <button onclick="appendValue('5')">5</button>
-                    <button onclick="appendValue('6')">6</button>
-                    <button onclick="appendValue('*')">*</button>
-
-                    <button onclick="appendValue('1')">1</button>
-                    <button onclick="appendValue('2')">2</button>
-                    <button onclick="appendValue('3')">3</button>
-                    <button onclick="appendValue('-')">-</button>
-
-                    <button onclick="appendValue('0')">0</button>
-                    <button onclick="appendValue('.')">.</button>
-                    <button onclick="clearDisplay()">C</button>
-                    <button onclick="appendValue('+')">+</button>
-
-                    <button class="equal-btn" onclick="calculateResult()">=</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Notepad Section -->
-        <section id="notepad" class="content-section">
-            <textarea id="notepad-content" rows="10" cols="30" placeholder="Write your notes here..."></textarea>
-            <div>
-                <button onclick="saveNote()">Save Note</button>
-                <button onclick="clearNote()">Clear Note</button>
-            </div>
-        </section>
-
-        <!-- Billing Section -->
-        <section id="bill" class="content-section billing-section">Bill Form and Details</section>
-        <section id="receipts" class="content-section billing-section">Receipts Form and Details</section>
-        <section id="expense" class="content-section billing-section">Expense Form and Details</section>
-        <section id="notepad" class="content-section">Notepad Content</section>   
-        <section id="billing" class="content-section">Billing Content</section>
-    </main>
-   
-
-    <script src="script.js"></script>
+    </script>
 </body>
 </html>
