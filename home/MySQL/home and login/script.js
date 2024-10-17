@@ -1,24 +1,4 @@
 
-
-
-// Function to handle login
-function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    // Replace these with your actual credentials or validation logic
-    const validUsername = 'admin';
-    const validPassword = 'password';
-
-    if (username === validUsername && password === validPassword) {
-        // On successful login, redirect to the home page
-        window.location.href = 'home.html'; // Change to the actual home page URL
-    } else {
-        // Show error message if login fails
-        const errorMessage = document.getElementById('login-error');
-        errorMessage.style.display = 'block'; // Show the error message
-    }
-}
 // Function to display main section
 function showSection(sectionId) {
     const sections = document.querySelectorAll('.content-section');
@@ -45,6 +25,13 @@ function showSection(sectionId) {
         reportsIframe.src = 'home/bill/report.html'; // Adjust path if needed
         console.log('Loading reports from:', reportsIframe.src); // Debugging log
     }
+
+        // Load expenses in iframe if the "money-reports" section is active
+        if (sectionId === 'money-reports') {
+            const reportsIframe = document.getElementById('money-reports-content');
+            reportsIframe.src = 'home/bill/Expenses.html'; // Adjust path if needed
+            console.log('Loading expenses from:', reportsIframe.src); // Debugging log
+        }
 }
 
 function initialize() {
@@ -322,51 +309,51 @@ function checkInsuranceExpiry(expiryDate) {
 }
 
 // Use environment variables for sensitive information
-require('dotenv').config();
+//require('dotenv').config();
 // Function to send SMS using Twilio API
-function sendSMS(message) {
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;  // Ensure this is set correctly
-    const authToken = process.env.TWILIO_AUTH_TOKEN;    // Ensure this is set correctly
-    const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;  // Twilio Number from environment
-    const recipientNumber = '+919481155714';  // Make sure the recipient number is in E.164 format
+//function sendSMS(message) {
+  //  const accountSid = process.env.TWILIO_ACCOUNT_SID;  // Ensure this is set correctly
+    //const authToken = process.env.TWILIO_AUTH_TOKEN;    // Ensure this is set correctly
+    //const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;  // Twilio Number from environment
+    //const recipientNumber = '+919481155714';  // Make sure the recipient number is in E.164 format
 
     // Check if environment variables are correctly loaded
-    if (!accountSid || !authToken || !twilioPhoneNumber) {
-        console.error("Twilio credentials are not set properly.");
-        return;
-    }
+    //if (!accountSid || !authToken || !twilioPhoneNumber) {
+      //  console.error("Twilio credentials are not set properly.");
+        //return;
+    //}
 
-    const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+   // const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
 
-    fetch(url, {
-        method: 'POST',
-        body: new URLSearchParams({
-            'To': recipientNumber,
-            'From': twilioPhoneNumber,  // From Twilio number (environment variable)
-            'Body': message
-        }),
-        headers: {
-            'Authorization': 'Basic ' + btoa(`${accountSid}:${authToken}`),
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error(`Error sending SMS: ${response.statusText}`);
-            return response.json().then(errorData => console.error(errorData));
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(`SMS sent successfully! SID: ${data.sid}`);
-    })
-    .catch(error => {
-        console.error('Error sending SMS:', error);
-    });
-}
+    //fetch(url, {
+      //  method: 'POST',
+       // body: new URLSearchParams({
+         //   'To': recipientNumber,
+           // 'From': twilioPhoneNumber,  // From Twilio number (environment variable)
+           // 'Body': message
+      //  }),
+       // headers: {
+         //   'Authorization': 'Basic ' + btoa(`${accountSid}:${authToken}`),
+           // 'Content-Type': 'application/x-www-form-urlencoded'
+     //   }
+   // })
+    //.then(response => {
+      //  if (!response.ok) {
+        //    console.error(`Error sending SMS: ${response.statusText}`);
+          //  return response.json().then(errorData => console.error(errorData));
+     //   }
+       // return response.json();
+//    })
+  //  .then(data => {
+    //    console.log(`SMS sent successfully! SID: ${data.sid}`);
+   // })
+    //.catch(error => {
+     //   console.error('Error sending SMS:', error);
+   // });
+//}
 
 // Example usage
-sendSMS('Vehicle insurance is expiring soon!');
+//sendSMS('Vehicle insurance is expiring soon!');
 
 
 
