@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Billing Software</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="script.sql">
 </head>
 <body>
     <!-- Header with Main Tabs and Logo -->
@@ -22,7 +21,7 @@
                 <ul>
                     <li><a href="#" onclick="event.preventDefault(); showSection('home')">Home</a></li>
                     <li><a href="#" onclick="event.preventDefault(); showSection('vehicle-records')">Vehicle Records</a></li>
-                    <li><a href="#" onclick="event.preventDefault(); showSection('transactions')">Transactions</a></li>
+                    <li><a href="#" onclick="event.preventDefault(); showSection('transactions')">E-Way Billing</a></li>
                     <li><a href="#" onclick="event.preventDefault(); showSection('services')">Services</a></li>
                     <li><a href="#" onclick="event.preventDefault(); showSection('reports')">Reports</a></li>
                     <li><a href="#" onclick="event.preventDefault(); showSection('money-reports')">Money Reports</a></li>
@@ -61,7 +60,7 @@
     <!-- Main Content Area -->
     <main>
       <!-- Home Section -->
-<section id="home" class="content-section" style="background: #e0e7ff; padding: 60px 20px; text-align: center;">
+<section id="home" class="content-section" style="display: block;" style="background: #e0e7ff; padding: 60px 20px; text-align: center;">
     <div class="hero" style="max-width: 800px; margin: auto; display: block;">
         <h1 style="font-size: 2.5em; color: #003366; margin-bottom: 20px;">Welcome to MBS Logistics</h1>
         <div class="IMG" style="margin-bottom: 30px;">
@@ -74,7 +73,7 @@
 </section>
 
         <!-- Vehicle Records Section -->
-        <section id="vehicle-records" class="content-section">
+        <section id="vehicle-records" class="content-section" style="display: none;">
             <h2>Vehicle Records</h2>
             <div id="vehicle-container">
                 <table id="vehicle-table">
@@ -100,22 +99,29 @@
         </section>
 
 
-       
+        <!-- E-Way Billing Section -->
+        <section id="transactions" class="content-section" style="display: none;" style="background-color: #f7f9fc; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 20px auto;">
+            <h2 style="font-family: 'Arial', sans-serif; color: #333; text-align: center;">E-Way Billing</h2>
+            <p style="font-size: 16px; color: #555; text-align: center;">Click the button below to access the E-Way Bill system:</p>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://ewaybillgst.gov.in/" target="_blank" style="font-size: 18px; color: #fff; background-color: #007bff; padding: 12px 24px; border-radius: 5px; text-decoration: none; display: inline-block; box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);">
+                    Go to E-Way Bill Website
+                </a>
+            </div>
+        </section>
     
 
         <!-- Other Sections -->
-        <section id="transactions" class="content-section">Transactions Content</section>
-        <section id="services" class="content-section">Services Content</section>
-        <section id="reports" class="content-section"> 
+        <section id="services" class="content-section" style="display: none;">Services Content</section>
+        <section id="reports" class="content-section" style="display: none;"> 
              <iframe id="reports-content" style="width: 100%; height: 100vh; border: none;"></iframe> </section>
-        <section id="money-reports" class="content-section"> 
+        <section id="money-reports" class="content-section" style="display: none;"> 
             <iframe id="money-reports-content" style="width: 100%; height: 100vh; border: none;"></iframe></section>
-        <section id="security" class="content-section">Security Content</section>
-        <section id="help" class="content-section">Help Content</section>
-        <section id="calculator" class="content-section">Calculator Content</section>
+        <section id="security" class="content-section" style="display: none;">Security Content</section>
+        <section id="help" class="content-section" style="display: none;">Help Content</section>
         
         <!-- Calculator Section -->
-        <section id="calculator" class="content-section">
+        <section id="calculator" class="content-section" style="display: none;">
             <div class="calculator">
                 <input type="text" id="calc-display" disabled>
                 <div class="calc-buttons">
@@ -145,7 +151,7 @@
         </section>
 
         <!-- Notepad Section -->
-        <section id="notepad" class="content-section">
+        <section id="notepad" class="content-section" style="display: none;">
             <textarea id="notepad-content" rows="10" cols="30" placeholder="Write your notes here..."></textarea>
             <div>
                 <button onclick="saveNote()">Save Note</button>
@@ -154,12 +160,12 @@
         </section>
 
         <!-- Billing Section -->
-        <section id="bill" class="content-section billing-section">Bill Form and Details</section>
-        <section id="receipts" class="content-section billing-section">Receipts Form and Details
+        <section id="bill" class="content-section billing-section" style="display: none;">Bill Form and Details</section>
+        <section id="receipts" class="content-section billing-section" style="display: none;">Receipts Form and Details
         </section>
-        <section id="Expenses" class="content-section billing-section">Expense Form and Details</section>
-        <section id="notepad" class="content-section">Notepad Content</section>   
-        <section id="billing" class="content-section">Billing Content</section>
+        <section id="Expenses" class="content-section billing-section" style="display: none;">Expense Form and Details</section>
+        <section id="notepad" class="content-section" style="display: none;">Notepad Content</section>   
+        <section id="billing" class="content-section" style="display: none;">Billing Content</section>
     </main>
    
     <script src="script.js"></script>

@@ -1,28 +1,25 @@
-// Function to generate a new LR number and update the form field
+// Function to generate a new LR number based on the last saved bill
 function generateLRNo() {
-    // Get the last LR number from local storage or set to '0000' if not present
-    let lastLRNo = localStorage.getItem('lastLRNo') || '0000';
+    // Retrieve saved bills from localStorage
+    const bills = JSON.parse(localStorage.getItem('bills')) || [];
 
-    // Increment the LR number by 1 and pad with zeros up to 4 digits
+    // If there are saved bills, get the last LR number
+    let lastLRNo = '0000'; // Default to '0000' if no bills exist
+    if (bills.length > 0) {
+        // Get the LR number of the last saved bill
+        lastLRNo = bills[bills.length - 1].lrNo;
+    }
+
+    // Increment the last LR number by 1 and pad with zeros up to 4 digits
     let newLRNo = (parseInt(lastLRNo) + 1).toString().padStart(4, '0');
 
     // Update the input field with the new LR number
     document.getElementById('lr-no').value = newLRNo;
 
-    // Store the new LR number in local storage for future use
+    // Store the new LR number in localStorage for future use
     localStorage.setItem('lastLRNo', newLRNo);
 }
 
-// Call the function to generate a new LR number when the page loads
-window.onload = function() {
-    generateLRNo();
-
-        // Other onload logic for populating dropdowns and goods
-        const goodsSelects = document.querySelectorAll('.goods');
-        goodsSelects.forEach(select => {
-            populateGoodsDropdown(select);
-        });
-    };
 
 
 
@@ -141,6 +138,8 @@ function generateBill() {
     document.getElementById("preview-lr-no").innerText = document.getElementById("lr-no").value;
     document.getElementById("preview-Consignor-Invoice-no").innerText = document.getElementById("Consignor-Invoice-no").value;
     document.getElementById("preview-Consignee-Invoice-no").innerText = document.getElementById("Consignee-Invoice-no").value;
+    document.getElementById("preview-consigner-gst").innerText = document.getElementById("consigner-gst").value;
+    document.getElementById("preview-consignee-gst").innerText = document.getElementById("consignee-gst").value;
 
     // Update total amounts
     const goodsEntries = document.querySelectorAll('#goods-entries tr');
@@ -189,58 +188,195 @@ function generateBill() {
     }
 }
 
-
-//<!-- From and To Section -->
-
-const fromList = ["Bengaluru", "Yeshwanthpur", "OT Pet"];
-const toList = ["KGF", "Bangarpet", "Kolar"];
-
-
-//<!-- Consignor and Consignee Section -->
-
-const consignersList = ["Raghu", "Aggarwal", "Consigner 3"];
-const consigneesList = ["Consignee 1", "Consignee 2", "Consignee 3"];
-
-// Function to populate Consignors and Consignees
-function populateSelectOptions(selectElementId, optionsArray) {
-    const selectElement = document.getElementById(selectElementId);
-    selectElement.innerHTML = '<option value="">Select ' + selectElementId + '</option>';
-    optionsArray.forEach(option => {
-        const newOption = document.createElement('option');
-        newOption.value = option;
-        newOption.textContent = option;
-        selectElement.appendChild(newOption);
-    });
-}
-
-// Call the function to populate the select elements on page load
-populateSelectOptions('consigner', consignersList);
-populateSelectOptions('consignee', consigneesList);
-populateSelectOptions('from', fromList);
-populateSelectOptions('to', toList);
-
-function addNewOption(selectId) {
-    const selectElement = document.getElementById(selectId);
-    const newOptionValue = prompt("Enter new " + selectId);
+    // Initialize data
+    const fromList = JSON.parse(localStorage.getItem("fromList")) || ["Bengaluru", "Yeshwanthpur", "OT Pet"];
+    const toList = JSON.parse(localStorage.getItem("toList")) || ["KGF", "Bangarpet", "Kolar"];
+    let consignersData = JSON.parse(localStorage.getItem("consignersData")) || [];
+    let consigneesData = JSON.parse(localStorage.getItem("consigneesData")) || [];
     
-    if (newOptionValue) {
-        const newOption = document.createElement('option');
-        newOption.value = newOptionValue;
-        newOption.textContent = newOptionValue;
-        selectElement.appendChild(newOption);
+    // Function to populate select options
+    function populateSelectOptions(selectElementId, optionsArray) {
+        const selectElement = document.getElementById(selectElementId);
+        selectElement.innerHTML = '<option value="">Select ' + selectElementId + '</option>';
+        optionsArray.forEach(option => {
+            const newOption = document.createElement('option');
+            newOption.value = option.name;
+            newOption.textContent = option.name;
+            selectElement.appendChild(newOption);
+        });
     }
-}
+    
+    // Populate selects on load
+    populateSelectOptions('from', fromList.map(name => ({ name })));
+    populateSelectOptions('to', toList.map(name => ({ name })));
+    populateSelectOptions('consigner', consignersData);
+    populateSelectOptions('consignee', consigneesData);
+    
+    // Function to save new options to localStorage (example)
+    function saveNewFromTo(fromValue, toValue) {
+        // Add the new values to the respective lists
+        if (fromValue && !fromList.includes(fromValue)) {
+            fromList.push(fromValue);
+            localStorage.setItem("fromList", JSON.stringify(fromList)); // Save to localStorage
+        }
+    
+        if (toValue && !toList.includes(toValue)) {
+            toList.push(toValue);
+            localStorage.setItem("toList", JSON.stringify(toList)); // Save to localStorage
+        }
+    }
+    
+    function populateConsignorDetails() {
+        const consignerSelect = document.getElementById('consigner');
+        const selectedName = consignerSelect.value;
+        const selectedConsignor = consignersData.find(consignor => consignor.name === selectedName);
+        
+        if (selectedConsignor) {
+            document.getElementById('consigner-address').value = selectedConsignor.address;
+            document.getElementById('consigner-gst').value = selectedConsignor.gstNo;
+            document.getElementById('consignor-invoice-no').value = selectedConsignor.invoiceNo || ''; // Add this line
+        } else {
+            document.getElementById('consigner-address').value = '';
+            document.getElementById('consigner-gst').value = '';
+            document.getElementById('consignor-invoice-no').value = ''; // Clear the invoice number as well
+        }
+    }
+    
+    function populateConsigneeDetails() {
+        const consigneeSelect = document.getElementById('consignee');
+        const selectedName = consigneeSelect.value;
+        const selectedConsignee = consigneesData.find(consignee => consignee.name === selectedName);
+    
+        if (selectedConsignee) {
+            document.getElementById('consignee-address').value = selectedConsignee.address;
+            document.getElementById('consignee-gst').value = selectedConsignee.gstNo;
+            document.getElementById('consignee-invoice-no').value = selectedConsignee.invoiceNo || ''; // Add this line
+        } else {
+            document.getElementById('consignee-address').value = '';
+            document.getElementById('consignee-gst').value = '';
+            document.getElementById('consignee-invoice-no').value = ''; // Clear the invoice number as well
+        }
+    }
+    
+    function openModal(type) {
+        document.getElementById('modal-title').innerText = `Add New ${type}`;
+        document.getElementById('modal-save').onclick = function() {
+            saveData(type);
+        };
+        document.getElementById('modal').style.display = 'block';
+    }
+    
+    // Ensure the viewModal opens correctly
+    function openViewModal() {
+        displayData(); // Populate the table with data before opening
+        document.getElementById('viewModal').style.display = 'block';
+    }
+    
+    function closeViewModal() {
+        document.getElementById('viewModal').style.display = 'none';
+    }
+    
+    function saveData(type) {
+        const name = document.getElementById('modal-name').value;
+        const address = document.getElementById('modal-address').value;
+        const gstNo = document.getElementById('modal-gst').value;
+    
+        if (name && address && gstNo) {
+            const newData = { name, address, gstNo };
+    
+            if (type === 'Consignor') {
+                consignersData.push(newData);
+                localStorage.setItem('consignersData', JSON.stringify(consignersData));
+                populateSelectOptions('consigner', consignersData);
+            } else if (type === 'Consignee') {
+                consigneesData.push(newData);
+                localStorage.setItem('consigneesData', JSON.stringify(consigneesData));
+                populateSelectOptions('consignee', consigneesData);
+            }
+            closeModal();
+        } else {
+            alert("Please fill in all fields");
+        }
+    }
+    
+    // Function to display saved data in the view modal
+    function displayData() {
+        const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Clear the table body
+    
+        // Combine consigners and consignees data for display
+        const savedData = [...consignersData, ...consigneesData];
+    
+        // Populate the table with saved data
+        savedData.forEach((data, index) => { // Pass the index for each data entry
+            const row = tableBody.insertRow();
+            row.insertCell(0).innerText = data.name;
+            row.insertCell(1).innerText = data.address;
+            row.insertCell(2).innerText = data.gstNo; // Ensure correct property name
+    
+            // Add a delete button in the last cell
+            const deleteCell = row.insertCell(3);
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.onclick = function () {
+                deleteData(index); // Pass the correct index to delete function
+            };
+            deleteCell.appendChild(deleteBtn);
+        });
+    }
+    
+    // Function to delete data by index
+    function deleteData(index) {
+        // Check if the index is in consignersData or consigneesData and delete the appropriate entry
+        if (index < consignersData.length) {
+            // Remove from consigners and update both localStorage and in-memory array
+            consignersData.splice(index, 1); 
+            localStorage.setItem('consignersData', JSON.stringify(consignersData)); // Update local storage
+        } else {
+            // Remove from consignees and update both localStorage and in-memory array
+            consigneesData.splice(index - consignersData.length, 1); 
+            localStorage.setItem('consigneesData', JSON.stringify(consigneesData)); // Update local storage
+        }
+    
+        // Immediately refresh the displayed data after deletion
+        displayData();
+    }
+    
+    
+    // Event listener for closing modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal');
+        const viewModal = document.getElementById('viewModal');
+        if (event.target == modal) {
+            closeModal();
+        } else if (event.target == viewModal) {
+            closeViewModal();
+        }
+    }
+    
+    function closeModal() {
+        document.getElementById('modal-name').value = '';
+        document.getElementById('modal-address').value = '';
+        document.getElementById('modal-gst').value = '';
+        document.getElementById('modal').style.display = 'none';
+    }
+    
+    
+    function removeOption(selectId) {
+        const selectElement = document.getElementById(selectId);
+        selectElement.selectedIndex = 0; // Reset to default option
+        if (selectId === 'consigner') {
+            document.getElementById('consigner-address').value = '';
+            document.getElementById('consigner-gst').value = '';
+            document.getElementById('consignor-invoice-no').value = ''; // Clear the invoice number as well
+        } else {
+            document.getElementById('consignee-address').value = '';
+            document.getElementById('consignee-gst').value = '';
+            document.getElementById('consignee-invoice-no').value = ''; // Clear the invoice number as well
+        }
+    }
 
-
-function removeOption(selectId) {
-    const selectElement = document.getElementById(selectId);
-    selectElement.options[selectElement.selectedIndex].remove();
-}
-
-
-
-//<!-- Goods Info Section -->
-
+// Define the list of goods
 const goodsList = [
     { id: 1, name: "Box", gst: 5 },
     { id: 2, name: "Big Box", gst: 5 },
@@ -252,11 +388,14 @@ const goodsList = [
 // Function to populate the goods dropdown
 function populateGoodsDropdown(selectElement) {
     selectElement.innerHTML = ''; // Clear existing options
+
+    // Add a default option
     const defaultOption = document.createElement('option');
     defaultOption.value = '';
     defaultOption.textContent = 'Select Goods';
     selectElement.appendChild(defaultOption);
 
+    // Populate options from goodsList
     goodsList.forEach(good => {
         const option = document.createElement('option');
         option.value = good.id; // Use the item's id as the value
@@ -264,17 +403,17 @@ function populateGoodsDropdown(selectElement) {
         selectElement.appendChild(option);
     });
 
-    // Add onchange event listener to recalculate when a new good is selected
+    // Handle the change event to update GST and recalculate totals
     selectElement.addEventListener('change', function() {
         const selectedGood = goodsList.find(good => good.id === parseInt(selectElement.value));
         const gstInput = selectElement.closest('tr').querySelector('.gst');
-        gstInput.value = selectedGood ? selectedGood.gst : 0; // Set GST based on selected good
+        gstInput.value = selectedGood ? selectedGood.gst : 0; // Set GST based on the selected good
 
         calculateRowTotal(selectElement); // Call the calculate function for the current row
     });
 }
 
-// Function to add a goods entry
+// Function to add a goods entry row
 function addGoodsEntry() {
     const goodsEntries = document.getElementById("goods-entries");
     const newRow = document.createElement("tr");
@@ -300,38 +439,41 @@ function addGoodsEntry() {
         <td><button type="button" onclick="removeGoodsEntry(this)">Remove</button></td>
     `;
 
-
-
     goodsEntries.appendChild(newRow);
-
 
     // Populate the new goods dropdown
     const goodsSelect = newRow.querySelector('.goods');
     populateGoodsDropdown(goodsSelect);
 
+    // Attach event listeners for recalculating totals
     newRow.querySelectorAll('.no-articles, .rate-per-article, .gst, .freight').forEach(input => {
         input.addEventListener('input', () => calculateRowTotal(input));
     });
 }
 
-  // Function to remove a goods entry
+// Function to remove a goods entry
 function removeGoodsEntry(button) {
     const row = button.closest('tr');
     row.remove();
-    calculateGrandTotal();
+    calculateGrandTotal(); // Recalculate grand total when a row is removed
 }
 
-// Call this function when the page loads to populate any existing rows
+// Function to initialize the first goods entry row on page load
+function initializeFirstRow() {
+    const goodsEntries = document.getElementById("goods-entries");
+    addGoodsEntry(); // Add the first row
+
+    // Populate the dropdown of the first row
+    const firstGoodsSelect = goodsEntries.querySelector('.goods');
+    if (firstGoodsSelect) {
+        populateGoodsDropdown(firstGoodsSelect); // Populate dropdown for the first row
+    }
+}
+
+// Call the function to initialize on page load
 window.onload = function() {
-    const goodsSelects = document.querySelectorAll('.goods');
-    goodsSelects.forEach(select => {
-        populateGoodsDropdown(select);
-    });
-}
-
-
-
-
+    initializeFirstRow(); // Initialize the first row on load
+};
 
 // Function to print the bill preview
 function printBill() {
@@ -421,11 +563,10 @@ function saveBill() {
                bills[index] = bill;
                alert("Bill updated successfully!");
    
-              // Save the updated bills array back to localStorage
-            localStorage.setItem('bills', JSON.stringify(bills));
 
             // Now remove the editBillIndex after updating the bill
             localStorage.removeItem("editBillIndex");
+            localStorage.removeItem("editBillIndex"); // Clear edit index
            } else {
                // No edit index, it's a new bill, so push it to the array
                bills.push(bill);
@@ -475,7 +616,7 @@ document.addEventListener("DOMContentLoaded", function() {
             goodsEntries.forEach((entry) => {
                 const row = goodsTable.insertRow();
                 row.innerHTML = `
-                    <td><input type="text" class="goods" value="${entry.goods}"></td>
+                       <td><input type="text" class="goods" value="${entry.goods}"></td>
                     <td><input type="number" class="no-articles" value="${entry.noOfArticles}"></td>
                     <td><input type="number" class="rate-per-article" value="${entry.ratePerArticle}"></td>
                     <td><input type="number" class="gst" value="${entry.gst}"></td>
@@ -492,7 +633,50 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+function newBill() {
+    // Clear all input fields
+    document.getElementById('lr-no').value = '';
+    document.getElementById('date').value = '';
+    document.getElementById('gst-paid-by').value = '';
+    document.getElementById('payment-mode').value = '';
+    document.getElementById('from').value = '';
+    document.getElementById('to').value = '';
+    document.getElementById('consigner').value = '';
+    document.getElementById('consigner-address').value = '';
+    document.getElementById('Consignor-Invoice-no').value = '';
+    document.getElementById('consignee').value = '';
+    document.getElementById('consignee-address').value = '';
+    document.getElementById('Consignee-Invoice-no').value = '';
 
+    // Clear goods entries
+    const goodsTable = document.getElementById('goods-entries');
+    goodsTable.innerHTML = ''; // Clear existing rows
+
+// Generate a new LR number based on the last saved bill
+generateLRNo();
+setCurrentDate();
+
+}
+
+
+    // Function to set the current date in the date input field
+    function setCurrentDate() {
+        const dateInput = document.getElementById('date'); // Get the date input element
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        dateInput.value = today; // Set the value of the date input
+    }
+
+      // Call this function when the page loads
+      window.onload = function() {
+        console.log("Setting current date..."); // Debugging line
+        setCurrentDate();
+
+        // This will only generate an LR number if you're creating a new bill
+        const isNewBill = !localStorage.getItem('editBillIndex'); // Only if not editing
+        if (isNewBill) {
+            generateLRNo();
+        }
+    };
 // Function to modify the bill (simulation)
 function modifyBill() {
     alert("Modify Bill functionality not implemented yet.");

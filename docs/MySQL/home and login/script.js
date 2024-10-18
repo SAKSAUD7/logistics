@@ -10,6 +10,7 @@ function showSection(sectionId) {
     const activeSection = document.getElementById(sectionId);
     if (activeSection) {
         activeSection.style.display = 'block';
+        console.log(`Displaying section: ${sectionId}`);  // Debug log
     }
 
     // Show sub-tabs for billing section
@@ -38,9 +39,13 @@ function initialize() {
     // Check if there's a hash in the URL
     const currentSection = window.location.hash.replace('#', '') || 'home';
     
+  // Log the current section to verify
+  console.log('Current section on load:', currentSection);
+
     // If there's no hash, default to 'home'
     if (!window.location.hash) {
         window.location.hash = 'home';
+        console.log('No hash found, setting default to home');
     }
     
     // Show the section

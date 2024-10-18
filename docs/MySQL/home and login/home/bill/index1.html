@@ -136,6 +136,97 @@
                 margin: 5px 0;
             }
         }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .billing-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Styles for the new bill form */
+        #new-bill-form {
+            display: none; /* Hidden by default */
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2, h3, h4 {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .form-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .form-section label {
+            flex: 1 1 200px;
+            margin: 5px 0;
+        }
+
+        .form-section input,
+        .form-section select,
+        .form-section textarea {
+            flex: 2 1 250px;
+            padding: 5px;
+            margin: 5px 0;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .form-buttons button {
+            margin: 0 5px;
+            padding: 10px 20px;
+        }
+
+        /* Bill Preview */
+        #bill-preview {
+            border: 1px solid black;
+            padding: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+            page-break-after: always;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+            }
+            .billing-container {
+                width: 100%;
+            }
+            #bill-preview {
+                display: block;
+            }
+        }
+        
     </style>
 
 </head>
@@ -149,13 +240,14 @@
         <!-- Customer Info Section -->
         <div class="form-section">
             <h4>Customer Info</h4>
+            <button type="button" onclick="newBill()" class="new-bill-btn">New Bill</button>
             <form id="billing-form">
                 <label for="lr-no">LR No.:</label>
-                <input type="text" id="lr-no" placeholder="LR No" required>
+                <input type="text" id="lr-no" placeholder="LR No" required readonly>
             
                 <label for="date">Date:</label>
-                <input type="date" id="date" required><br>
-
+                <input type="date" id="date" name="date" required>
+                
                 <label for="gst-paid-by">GST Paid By:</label>
                 <select id="gst-paid-by" required>
                     <option value="consigner">consigner</option>
@@ -165,63 +257,102 @@
 
                 <label for="payment-mode">Payment Mode:</label>
                 <select id="payment-mode" required>
-                    <option value="cash">Cash</option>
-                    <option value="cheque">Cheque</option>
-                    <option value="online">Online</option>
+                    <option value="Paid">Paid</option>
+                    <option value="To Pay">To Pay</option>
+                    <option value="To be Billed">To be Billed</option>
                 </select><br>
 
-               
-                <label for="from">From:</label>
-                <select id="from" placeholder="From"required>
-                    <option value="">Select Location</option>
-                </select>
-                <button type="button" onclick="addNewOption('from')">Add New Location</button>
-                <button type="button" onclick="removeOption('from')">Remove Location</button><br>
+              <!-- From and To Section -->
+<label for="from">From:</label>
+<select id="from" placeholder="From" required>
+    <option value="">Select Location</option>
+</select>
+<button type="button" onclick="addNewOption('from')">Add New Location</button>
+<button type="button" onclick="removeOption('from')">Remove Location</button><br>
 
-                <label for="to">To:</label>
-                <select id="to" placeholder="To" required>
-                    <option value="">Select Destination</option>
-                </select>
-                <button type="button" onclick="addNewOption('to')">Add New Destination</button>
-                <button type="button" onclick="removeOption('to')">Remove Destination</button><br>
-            </form>
-        </div>
+<label for="to">To:</label>
+<select id="to" placeholder="To" required>
+    <option value="">Select Destination</option>
+</select>
+<button type="button" onclick="addNewOption('to')">Add New Destination</button>
+<button type="button" onclick="removeOption('to')">Remove Destination</button><br>
 
-        <!-- Consignor and Consignee Section -->
-        <div class="form-section">
-            <h4>Consignor & Consignee</h4>
-            <form id="consignee-form">
-                <label for="consigner">Consignor:</label>
-                <select id="consigner" placeholder="Consigner" required>
-                    <option value="">Select Consignor</option>
-                </select>
-                <button type="button" onclick="addNewOption('consigner')">Add New Consignor</button>
-                <button type="button" onclick="removeOption('consigner')">Remove Consignor</button><br>
+<!-- Consignor and Consignee Section -->
+<h4>Consignor & Consignee</h4>
+<form id="consignor-consignee-form">
+    <!-- Consignor Section -->
+    <label for="consigner">Consignor:</label>
+    <select id="consigner" required onchange="populateConsignorDetails()">
+        <option value="">Select Consignor</option>
+    </select>
+    <button id="add-consignor-btn" type="button" onclick="openModal('Consignor')">Add New Consignor</button>
+    <button type="button" onclick="removeOption('consigner')">Remove Consignor</button>
+    <button id="view-consignors-btn" type="button" onclick="openViewModal()">View Consignors</button>
 
-                
-                <label for="consigner-address">Consigner Address:</label>
-                <textarea id="consigner-address"  placeholder="Consignee Address"  required></textarea><br>
+    <label for="consigner-address">Consignor Address:</label>
+    <textarea id="consigner-address" placeholder="Consignor Address" required></textarea><br><br>
 
-                <label for="bill-no">Consignor Invoice No.:</label>
-                <textarea type="text" id="Consignor-Invoice-no" placeholder="Consignor Invoice No" required></textarea><br>
+    <label for="consigner-gst">Consignor GST No.:</label>
+    <input type="text" id="consigner-gst" placeholder="Consignor GST No." required><br><br>
 
-                <label for="consignee">Consignee:</label>
-                <select id="consignee" placeholder="Consignee" required>
-                    <option value="">Select Consignee</option>
-                </select>
-                <button type="button" onclick="addNewOption('consignee')">Add New Consignee</button>
-                <button type="button" onclick="removeOption('consignee')">Remove Consignee</button><br>
+    <label for="bill-no">Consignor Invoice No.:</label>
+    <input type="text" id="Consignor-Invoice-no" placeholder="Consignor Invoice No." required><br><br>
 
-                <label for="consignee-address">Consignee Address:</label>
-                <textarea id="consignee-address" placeholder="Consigner Address" required></textarea><br>
+    <!-- Consignee Section -->
+    <label for="consignee">Consignee:</label>
+    <select id="consignee" required onchange="populateConsigneeDetails()">
+        <option value="">Select Consignee</option>
+    </select>
+    <button id="add-consignee-btn" type="button" onclick="openModal('Consignee')">Add New Consignee</button>
+    <button type="button" onclick="removeOption('consignee')">Remove Consignee</button>
+    <button id="view-consignees-btn" type="button" onclick="openViewModal()">View Consignees</button><br><br>
 
-                
-                <label for="bill-no">Consignee Invoice No.:</label>
-                <textarea type="text" id="Consignee-Invoice-no" required></textarea><br>
+    <label for="consignee-address">Consignee Address:</label>
+    <textarea id="consignee-address" placeholder="Consignee Address" required></textarea><br><br>
 
-            </form>
-        </div>
+    <label for="consignee-gst">Consignee GST No.:</label>
+    <input type="text" id="consignee-gst" placeholder="Consignee GST No." required><br><br>
 
+    <label for="bill-no">Consignee Invoice No.:</label>
+    <input type="text" id="Consignee-Invoice-no" placeholder="Consignee Invoice No." required><br><br>
+</form>
+
+<!-- Modal HTML -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modal-title">Add New Consignor/Consignee</h2>
+        <label for="modal-name">Name:</label>
+        <input type="text" id="modal-name"><br><br>
+        <label for="modal-address">Address:</label>
+        <input type="text" id="modal-address"><br><br>
+        <label for="modal-gst">GST No.:</label>
+        <input type="text" id="modal-gst"><br><br>
+        <button id="modal-save">Save</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- Modal for Viewing Saved Data -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeViewModal()">&times;</span>
+        <h2>Saved Consignor/Consignee Data</h2>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>GST No.</th>
+                    <th>Action</th> <!-- New column for delete action -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows will be inserted here dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
         <!-- Goods Info Section -->
         <div class="form-section">
             <h4>Goods Info</h4>
@@ -270,7 +401,6 @@
             <button type="button" onclick="saveBill()">Save Bill</button>
             <button type="button" onclick="modifyBill()">Modify Bill</button>
             <button type="button" onclick="deleteBill()">Delete Bill</button>
-            <button type="button" onclick="closeForm()">Close</button>
         </div>
     </form>
 </div>
@@ -301,13 +431,13 @@
         </tr>
         <td style="border: 1px solid black; padding: 5px; vertical-align: top;text-align: left;">
             <strong>Consignor:</strong> <span id="preview-consignor"></span><br>
-            <strong>Consignor GST:</strong> <span id="preview-consignor-name"></span><br>
+            <strong>Consignor GST:</strong> <span id="preview-consigner-gst"></span><br>
             <strong>Invoice-no:</strong> <span id="preview-Consignor-Invoice-no"></span><br>
             <strong>Address:</strong> <span id="preview-consignor-address"></span>
           </td>
           <td style="border: 1px solid black; padding: 5px; vertical-align: top;text-align: left;">
             <strong>Consignee:</strong> <span id="preview-consignee"></span><br>
-            <strong>Consignee GST:</strong> <span id="preview-consignee-name"></span><br>
+            <strong>Consignee GST:</strong> <span id="preview-consignee-gst"></span><br>
             <strong>Invoice-no:</strong> <span id="preview-Consignee-Invoice-no"></span><br>
             <strong>Address:</strong> <span id="preview-consignee-address"></span>
           </td>

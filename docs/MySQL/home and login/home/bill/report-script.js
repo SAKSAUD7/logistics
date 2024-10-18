@@ -174,12 +174,64 @@ function exportToExcel() {
 }
 
 function printTable() {
-    var printContents = document.getElementById("reports-table").outerHTML;
-    var win = window.open('', '', 'height=500,width=800');
-    win.document.write('<html><head><title>Print Table</title>');
-    win.document.write('</head><body>');
-    win.document.write(printContents);
-    win.document.write('</body></html>');
-    win.document.close();
-    win.print();
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    const reportTable = document.getElementById('reports-table').outerHTML;
+
+    // Set up the content of the new window
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print Report</title>
+                <link rel="stylesheet" href="report-style.css">
+            </head>
+            <body>
+                <h2>Billing Report</h2>
+                ${reportTable}
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.close();
+                    };
+                <\/script>
+            </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+}
+
+function populateTable(data) {
+    const reportsBody = document.getElementById('reportsBody');
+    reportsBody.innerHTML = ''; // Clear previous data
+
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        
+        // Assuming `item` has properties like `lrNo`, `date`, etc.
+        row.innerHTML = `
+            <td>${item.lrNo}</td>
+            <td>${item.date}</td>
+            <td>${item.gstPaidBy}</td>
+            <td>${item.paymentMode}</td>
+            <td>${item.from}</td>
+            <td>${item.to}</td>
+            <td>${item.consignor}</td>
+            <td>${item.consignorAddress}</td>
+            <td>${item.consignorInvoiceNo}</td>
+            <td>${item.consignee}</td>
+            <td>${item.consigneeAddress}</td>
+            <td>${item.consigneeInvoiceNo}</td>
+            <td><input type="number" value="${item.totalAmount}" onchange="updateTotal(${item.lrNo}, this.value)"></td>
+            <td><button onclick="deleteRow(${item.lrNo})">Delete</button></td>
+        `;
+        reportsBody.appendChild(row);
+    });
+}
+
+function updateTotal(lrNo, newPrice) {
+    // Update the total amount in your data source
+    console.log(`Updated LR No: ${lrNo}, New Price: ${newPrice}`);
+    // Implement the logic to save the new price if necessary
 }
