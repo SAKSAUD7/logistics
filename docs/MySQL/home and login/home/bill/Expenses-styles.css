@@ -115,7 +115,7 @@ td {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Modal styling */
+/* Modal Styling */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; 
@@ -130,10 +130,11 @@ td {
 
 .modal-content {
     background-color: #fff;
-    margin: 15% auto;
+    margin: 10% auto; /* Center the modal vertically */
     padding: 20px;
     border: 1px solid #888;
-    width: 50%; /* Adjust the width as per your requirement */
+    width: 90%; /* Adjust the width for better responsiveness */
+    max-width: 600px; /* Set a max width for larger screens */
     border-radius: 10px;
 }
 
@@ -167,19 +168,20 @@ td {
         text-align: left;
     }
 
-    .search-bar input {
-        width: 100%;
+    button {
+        width: 100%; /* Full width for buttons on smaller screens */
+        margin-left: 0; /* Remove margin on left */
+        margin-bottom: 10px; /* Space between buttons */
     }
 }
 
 @media (max-width: 600px) {
-    button {
-        width: 100%;
-        margin: 5px 0;
-    }
-
     th, td {
         padding: 8px;
-        font-size: 12px;
+        font-size: 12px; /* Adjusted font size for smaller screens */
+    }
+
+    .modal-content {
+        width: 90%; /* Maintain responsive width in mobile */
     }
 }

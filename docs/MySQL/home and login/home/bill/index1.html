@@ -380,12 +380,13 @@
                         <td><input type="number" class="rate-per-article" id="rate-per-article" placeholder="Rate Per Article" required oninput="calculateTotal(this)"></td>
                         <td>
                             <select class="gst" id="gst" placeholder="GST" required onchange="calculateTotal(this)">
+                                <option value="0">0%</option>
                                 <option value="5">5%</option>
                                 <option value="12">12%</option>
                                 <option value="18">18%</option>
                             </select>
                         </td>
-                        <td><input type="number" class="gst-amt" required readonly></td>
+                        <td><input type="number" id="gst-amt"class="gst-amt" required readonly></td>
                         <td><input type="number" class="freight" required oninput="calculateTotal(this)"></td>
                         <td><input type="number" class="total" id="total" placeholder="Total"required readonly></td>
                         <td><button type="button" onclick="removeGoodsEntry(this)">Remove</button></td>

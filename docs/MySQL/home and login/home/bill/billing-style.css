@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #e0e7ff, #f4f7f9);
@@ -6,6 +7,7 @@ body {
     color: #333;
 }
 
+/* Billing Container */
 .billing-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -29,6 +31,7 @@ body {
     filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
 }
 
+/* Heading Styles */
 h2, h3, h4 {
     color: #003366;
     text-align: center;
@@ -37,6 +40,7 @@ h2, h3, h4 {
     width: 100%;
 }
 
+/* Form Section */
 .form-section {
     background: #f9f9f9;
     border-radius: 12px;
@@ -51,6 +55,7 @@ h2, h3, h4 {
     transform: scale(1.01);
 }
 
+/* Input Styles */
 label {
     font-weight: bold;
     color: #003366;
@@ -78,6 +83,7 @@ select:focus {
     outline: none;
 }
 
+/* Button Styles */
 button {
     background: linear-gradient(135deg, #003366, #00509e);
     color: white;
@@ -99,6 +105,7 @@ button:active {
     transform: translateY(1px);
 }
 
+/* Table Styles */
 table {
     width: 100%;
     margin-top: 20px;
@@ -123,6 +130,7 @@ td {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* Bill Preview Styles */
 .bill-preview {
     border: 1px solid #003366;
     padding: 20px;
@@ -140,16 +148,7 @@ td {
     color: #00509e;
 }
 
-/* Flex layout for landscape view */
-.form-section-half {
-    flex: 1 1 48%;
-    padding: 10px;
-}
-
-.form-section-full {
-    flex: 1 1 100%;
-}
-
+/* Footer Styles */
 .footer {
     text-align: center;
     margin-top: 40px;
@@ -157,46 +156,25 @@ td {
     color: #777;
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
-    .billing-container {
-        flex-direction: column;
-    }
-
-    .form-section-half {
-        flex: 1 1 100%;
-    }
+/* New Bill Button Styles */
+.new-bill-btn {
+    position: fixed; /* Fix the button's position relative to the viewport */
+    right: 20px; /* Adjust distance from the right edge of the page */
+    top: 20px; /* Adjust distance from the top edge of the page */
+    padding: 10px 15px; /* Add padding for a better appearance */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    z-index: 1000; /* Ensure button appears on top of other elements */
 }
 
-@media (max-width: 600px) {
-    .billing-container {
-        padding: 20px;
-    }
-
-    button {
-        width: 100%;
-        margin: 5px 0;
-    }
-
-    th, td {
-        padding: 8px;
-        font-size: 12px;
-    }
-
-    .bill-preview {
-        padding: 15px;
-    }
-
-    .total {
-        font-size: 16px;
-    }
+.new-bill-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
 
-/* styles.css */
-body {
-    font-family: Arial, sans-serif;
-}
-
+/* Modal Styles */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -232,35 +210,41 @@ body {
     cursor: pointer;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+    .billing-container {
+        padding: 20px;
+        flex-direction: column;
+    }
+
+    .form-section {
+        flex: 1 1 100%;
+    }
+
+    button {
+        width: 100%;
+    }
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
+@media (max-width: 600px) {
+    .billing-container {
+        padding: 10px;
+    }
 
-th {
-    background-color: #f2f2f2;
-}
+    button {
+        padding: 10px;
+    }
 
+    th, td {
+        padding: 8px;
+        font-size: 12px;
+    }
 
-.new-bill-btn {
-    position: fixed; /* Fix the button's position relative to the viewport */
-    right: 20px; /* Adjust distance from the right edge of the page */
-    top: 20px; /* Adjust distance from the top edge of the page */
-    padding: 10px 15px; /* Add padding for a better appearance */
-    background-color: #007bff; /* Button background color */
-    color: white; /* Button text color */
-    border: none; /* Remove default border */
-    border-radius: 5px; /* Slightly rounded corners */
-    cursor: pointer; /* Change cursor to pointer on hover */
-    z-index: 1000; /* Ensure button appears on top of other elements */
-}
+    .bill-preview {
+        padding: 15px;
+    }
 
-.new-bill-btn:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    .total {
+        font-size: 16px;
+    }
 }

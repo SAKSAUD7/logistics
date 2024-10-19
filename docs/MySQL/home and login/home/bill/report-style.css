@@ -115,8 +115,13 @@ button:active {
         padding: 20px;
     }
 
+    .search-bar {
+        margin-bottom: 20px;
+    }
+
     .search-bar input {
         width: 100%;
+        padding: 10px;
     }
 }
 
@@ -124,10 +129,16 @@ button:active {
     button {
         width: 100%;
         margin: 5px 0;
+        padding: 10px; /* Adjust padding for smaller screens */
+        font-size: 16px; /* Increase font size for better readability */
     }
 
     th, td {
         padding: 8px;
         font-size: 12px;
+    }
+
+    h2, h3, h4 {
+        font-size: 1.5em; /* Adjust heading size for mobile */
     }
 }

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Billing Software</title>
     <link rel="stylesheet" href="style.css">
+    
 </head>
 <body>
     <!-- Header with Main Tabs and Logo -->
@@ -98,7 +99,16 @@
             </div>
         </section>
 
-
+<!-- Modal Structure -->
+<div id="insuranceModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Insurance Expiry Alert</h2>
+      <p id="modalText"></p>
+      <button id="confirmBtn">Confirm</button>
+    </div>
+  </div>
+  
         <!-- E-Way Billing Section -->
         <section id="transactions" class="content-section" style="display: none;" style="background-color: #f7f9fc; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 20px auto;">
             <h2 style="font-family: 'Arial', sans-serif; color: #333; text-align: center;">E-Way Billing</h2>

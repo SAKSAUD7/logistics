@@ -55,7 +55,7 @@ function calculateRowTotal(input) {
     const freight = parseFloat(row.querySelector('.freight').value) || 0;
 
     // Validate input values and reset the row if invalid
-    if (!noOfArticles || !ratePerArticle || noOfArticles < 0 || ratePerArticle < 0) {
+    if (noOfArticles <= 0 || ratePerArticle <= 0) {
         row.querySelector('.gst-amt').value = '';
         row.querySelector('.total').value = '';
         return;
@@ -146,6 +146,7 @@ function generateBill() {
     const previewEntries = document.getElementById('preview-entries');
     previewEntries.innerHTML = ''; // Clear previous entries
     let grandTotal = 0;
+    let totalGstAmount = 0; // Initialize total GST amount
 
     goodsEntries.forEach((entry) => {
         const goodsId = parseInt(entry.querySelector('.goods').value);
@@ -155,6 +156,8 @@ function generateBill() {
         const gstAmount = entry.querySelector('.gst-amt').value || 0;
         const freight = entry.querySelector('.freight').value || 0;
         const total = entry.querySelector('.total').value || 0;
+        const gstAmtElement = document.getElementById("gst-amt");
+
 
         if (selectedGood) { // Only add to preview if a valid good is selected
             const newRow = `
@@ -170,12 +173,18 @@ function generateBill() {
             `;
             previewEntries.insertAdjacentHTML('beforeend', newRow);
             grandTotal += parseFloat(total);
+            totalGstAmount += gstAmount; // Accumulate GST amounts
         }
     });
 
-    // Update total amounts in the preview
-    document.getElementById("preview-gst-amt").innerText = document.getElementById("gst-amt").value;
-    document.getElementById("preview-total").innerText = grandTotal.toFixed(2);
+     // Update total amounts in the preview
+
+    if (!gstamt) {
+        console.error("Element with ID 'gst-amt' not found.");
+        return; // Exit the function early
+    }
+     
+    document.getElementById("preview-total").innerText = grandTotal.toFixed(2); // Grand total
 
     document.getElementById("bill-preview").style.display = 'block'; // Show the bill preview
 

@@ -184,4 +184,8 @@ td {
         padding: 8px;
         font-size: 12px;
     }
+
+    .modal-content {
+        width: 90%; /* Make modal content responsive */
+    }
 }

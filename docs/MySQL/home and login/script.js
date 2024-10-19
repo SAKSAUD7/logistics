@@ -204,18 +204,30 @@ function loadVehicleRecords() {
         `;
         tableBody.appendChild(newRow);
 
-        // Check if insurance expiry is within a month or has expired
-        const oneMonthLater = new Date(today.setMonth(today.getMonth() + 1));
-        if (expiryDate < oneMonthLater) {
-            expiringSoon.push(`${record.name} (expires on: ${record.expiry})`);
+            // Check if insurance expiry is within a month or has expired
+            const oneMonthLater = new Date(today);
+            oneMonthLater.setMonth(today.getMonth() + 1);
+            if (expiryDate < oneMonthLater) {
+                expiringSoon.push(`${record.name} (expires on: ${record.expiry})`);
+            }
+        });
+    
+        // Show a modal for expiring or expired insurance
+        if (expiringSoon.length > 0) {
+            const message = `
+            🚨 <strong>Insurance Alert!</strong> 🚨
+            
+            The following vehicles have insurance that is <strong>expiring soon</strong> or <strong>has already expired</strong>:
+            
+            ${expiringSoon.map(vehicle => `• <strong>${vehicle}</strong>`).join('<br>')}
+            
+            Please take action to renew the insurance as soon as possible to avoid any issues.
+            📝 Stay Safe!
+            `;
+            
+            showModal(message); // Use the modal instead of alert
         }
-    });
-
-    // Show a popup for expiring or expired insurance
-    if (expiringSoon.length > 0) {
-        alert(`The following vehicles' insurance is expiring soon or has expired:\n\n${expiringSoon.join('\n')}`);
     }
-}
 
 function deleteRecord(index) {
     let vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
@@ -300,18 +312,62 @@ function previewImage(event) {
     }
 }
 
-function checkInsuranceExpiry(expiryDate) {
-    const expiry = new Date(expiryDate);
-    const today = new Date();
+window.onload = function() {
+    checkInsuranceExpiry();
+};
 
-    if (expiry < today) {
-        alert('Vehicle insurance has expired!');
-        sendSMS(`Insurance expired for vehicle: ${vehicleName}!`, '+919481155714');  // Send alert to a specific number
-    } else if (expiry - today < 30 * 24 * 60 * 60 * 1000) {  // Less than a month left
-        alert('Vehicle insurance will expire soon!');
-        sendSMS(`Vehicle insurance is expiring soon for: ${vehicleName}!`, '+919481155714');  // Send alert 
+// Function to check all vehicle records for insurance expiry
+function checkInsuranceExpiry() {
+    const vehicleRecords = JSON.parse(localStorage.getItem('vehicleRecords')) || [];
+    const today = new Date();
+    const expiringSoon = [];
+
+    vehicleRecords.forEach(record => {
+        const expiryDate = new Date(record.expiry);
+        const oneMonthLater = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+
+        if (expiryDate < today) {
+            expiringSoon.push(`${record.name} (Expired on: ${record.expiry})`);
+        } else if (expiryDate < oneMonthLater) {
+            expiringSoon.push(`${record.name} (Expires on: ${record.expiry})`);
+        }
+    });
+
+    // Show a popup for expiring or expired insurance through the modal
+    if (expiringSoon.length > 0) {
+        showModal(`The following vehicles' insurance is expiring soon or has expired:\n\n${expiringSoon.join('\n')}`);
     }
 }
+
+// Function to show the modal with the expiring insurance message
+function showModal(message) {
+    const modal = document.getElementById('insuranceModal');
+    const modalText = document.getElementById('modalText');
+    const closeModal = document.querySelector('.close-btn');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    modalText.innerHTML = message;
+    modal.style.display = 'block';
+
+    // Close modal on 'x' button click
+    closeModal.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Close modal on Confirm button click
+    confirmBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Close modal if user clicks outside of it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
+
+
 
 // Use environment variables for sensitive information
 //require('dotenv').config();
