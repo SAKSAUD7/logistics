@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid black;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bills Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>LR No</th>
+                <th>Manual Bill No</th>
+                <th>Bill No</th>
+                <th>Customer Name</th>
+                <th>From Location</th>
+                <th>To Location</th>
+                <th>Goods</th>
+                <th>No of Articles</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="billsTableBody">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+    // Fetch data from the API and display it in the table
+// Fetch data from the API and display it in the table
+async function loadBillsData() {
+    try {
+        const response = await fetch('http://localhost:4000/api/get-bills'); // Ensure correct URL
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const bills = await response.json();
+        console.log(bills); // Check if data is coming correctly
+        const tableBody = document.getElementById('billsTableBody');
+        tableBody.innerHTML = ''; // Clear existing content
+
+        if (bills.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="12">No data available</td></tr>';
+            return;
+        }
+
+        bills.forEach((bill) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${bill.id}</td>
+                <td>${bill.lrNo || ''}</td>
+                <td>${bill.manualBillNo || ''}</td>
+                <td>${bill.billNo || ''}</td>
+                <td>${bill.customerName || ''}</td>
+                <td>${bill.fromLocation || ''}</td>
+                <td>${bill.toLocation || ''}</td>
+                <td>${bill.goods || ''}</td>
+                <td>${bill.noArticles || ''}</td>
+                <td>${bill.total || ''}</td>
+                <td>${new Date(bill.date).toLocaleDateString()}</td> <!-- Formatting date -->
+                <td>${bill.time || ''}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading bills data:', error);
+    }
+}
+
+window.onload = loadBillsData;
+
+
+    </script>
+</body>
+</html>

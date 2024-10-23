@@ -1,38 +1,55 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Fetch saved bills from localStorage and display them in the report table
-    loadReports(); // Changed from loadSavedBills to loadReports
+    // Load saved bills from localStorage and display them in the report table
+    loadReports();
 
     // Search functionality
     const searchInput = document.getElementById("search-input");
     searchInput.addEventListener("input", searchReports);
 }); 
 
-function loadReports() {
-    console.log("Loading reports..."); // Add this line
+async function loadReports() {
+    console.log("Loading reports..."); // Log the loading process
     const reportsBody = document.getElementById('reportsBody');
     if (!reportsBody) {
         console.error("reportsBody element not found!");
         return;
     }
-    reportsBody.innerHTML = ''; // Clear the existing content
+    reportsBody.innerHTML = ''; // Clear existing content
 
-    const bills = JSON.parse(localStorage.getItem('bills')) || [];
-    console.log("Bills fetched:", bills);
+    // Fetch bills from the server
+    let serverBills = [];
+    try {
+        const response = await fetch('/api/get-bills'); // Make sure the endpoint is correct
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        serverBills = await response.json();
+    } catch (error) {
+        console.error('Error fetching bills from server:', error);
+    }
 
-     // Filter out null entries in the bills array
-     const validBills = bills.filter(bill => bill !== null);
-     console.log("Valid bills:", validBills);
+    // Fetch bills from localStorage
+    const localBills = JSON.parse(localStorage.getItem('bills')) || [];
+    console.log("Bills fetched from local storage:", localBills);
+
+    // Combine server bills and local storage bills
+    const allBills = [...serverBills, ...localBills]; // Merging both arrays
+    console.log("Combined bills:", allBills);
+
+    // Filter out null entries in the allBills array
+    const validBills = allBills.filter(bill => bill !== null);
+    console.log("Valid bills:", validBills);
 
     if (validBills.length === 0) {
-        reportsBody.innerHTML = '<tr><td colspan="10">No bills saved.</td></tr>';
+        reportsBody.innerHTML = '<tr><td colspan="14">No bills saved.</td></tr>';
         return;
     }
 
     validBills.forEach((bill, index) => {
-        const total = bill.total; // Use the total saved in the bill object directly
+        const total = bill.total || bill.totalAmount || 0; // Use total saved in the bill object directly
         const row = `<tr>
             <td>${bill.lrNo}</td>
-            <td>${bill.date}</td>
+            <td>${new Date(bill.date).toLocaleDateString()}</td>
             <td>${bill.gstPaidBy}</td>
             <td>${bill.paymentMode}</td>
             <td>${bill.from}</td>
@@ -54,14 +71,14 @@ function loadReports() {
     });
 }
 
-               
+
 
 // Ensure loadReports is called when reports section is displayed
 document.getElementById("goToReportsBtn").addEventListener("click", function () {
     loadReports(); // Ensure that reports are loaded when button is clicked
     const reportsSection = document.getElementById("reports-section");
     reportsSection.scrollIntoView({ behavior: 'smooth' });
-});
+}); 
 
 
 // Function to search reports
